@@ -38,7 +38,7 @@ class MemoryPage extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.fromLTRB(20, 30, 0, 0),
                   child: Text(
-                    "2019.09.17",
+                    "2019.09",
                     style: TextStyle(color: Colors.white, fontSize: 25),
                   ),
                 ),
