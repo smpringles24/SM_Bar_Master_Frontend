@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sm_bar_master_frontend/ui/album/album_page.dart';
 import 'package:sm_bar_master_frontend/ui/memory/memory_view_model.dart';
 import 'package:provider/provider.dart';
+import 'package:sm_bar_master_frontend/ui/new_album/new_album_page.dart';
 
 class Album {
   final String imageUrl;
@@ -37,7 +38,6 @@ class MemoryView extends StatelessWidget {
       body: FutureBuilder(
           future: memoryViewModel.memoryPreviewImages,
           builder: (context, snapshot) {
-            
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator(); // 로딩 중 화면
             } else if (snapshot.hasError) {
@@ -45,21 +45,30 @@ class MemoryView extends StatelessWidget {
             } else if (snapshot.hasData) {
               return Column(
                 children: [
-                  const Row(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(20, 30, 0, 0),
-                        child: Text(
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(40, 30, 40, 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
                           "2019.09",
-                          style: TextStyle(color: Colors.white, fontSize: 25),
+                          style: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.w700),
                         ),
-                      ),
-                    ],
+                        IconButton(
+                          onPressed: () {},
+                          icon: const Icon(
+                            Icons.delete_forever,
+                            color: Colors.white,
+                            size: 30,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 20),
+                          horizontal: 40, vertical: 35),
                       child: GridView.builder(
                         scrollDirection: Axis.horizontal,
                         gridDelegate:
@@ -68,22 +77,38 @@ class MemoryView extends StatelessWidget {
                           crossAxisSpacing: 25.0,
                           mainAxisSpacing: 25.0,
                         ),
-                        itemCount: snapshot.data!.length,
+                        itemCount: snapshot.data!.length + 1,
                         itemBuilder: (BuildContext context, int index) {
-                          return InkWell(
-                            onTap: () {
-                              Navigator.push(
+                          if (index < snapshot.data!.length) {
+                            return InkWell(
+                              onTap: () {
+                                Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => const AlbumPage()));
-                            },
-                            child: SizedBox(
-                              child: Image.asset(
-                                albumData[index].imageUrl,
-                                fit: BoxFit.cover,
+                                    builder: (context) => const AlbumPage(),
+                                  ),
+                                );
+                              },
+                              child: SizedBox(
+                                child: Image.asset(
+                                  "lib/assets/placeholder.png",
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                            ),
-                          );
+                            );
+                          } else {
+                            return ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const NewAlbumPage(),
+                                  ),
+                                );
+                              },
+                              child: const Text("앨범 추가"),
+                            );
+                          }
                         },
                       ),
                     ),
