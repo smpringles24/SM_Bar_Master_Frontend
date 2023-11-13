@@ -8,8 +8,11 @@ class NewAlbumPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => NewAlbumViewModel(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => NewAlbumViewModel()),
+        ChangeNotifierProvider(create: (_) => NewAlbumDataViewModel()),
+      ],
       child: const NewAlbumView(),
     );
   }

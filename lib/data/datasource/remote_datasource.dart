@@ -9,11 +9,24 @@ Future<List<AlbumPreviewImageModel>> fetchAllAlbumPreviewImage() async {
 
   if (response.statusCode == 200) {
     List<dynamic> jsonData = jsonDecode(response.body);
-    List<AlbumPreviewImageModel> albumList = jsonData.map((jsonItem) => 
-      AlbumPreviewImageModel.fromJson(jsonItem as Map<String, dynamic>))
-      .toList();
+    List<AlbumPreviewImageModel> albumList = jsonData
+        .map((jsonItem) =>
+            AlbumPreviewImageModel.fromJson(jsonItem as Map<String, dynamic>))
+        .toList();
     return albumList;
   } else {
-    throw Exception('Failed to load preview images. Status code: ${response.statusCode}');
+    throw Exception(
+        'Failed to load preview images. Status code: ${response.statusCode}');
+  }
+}
+
+void deleteAlbum(String id) async {
+  final url = Uri.parse("http://localhost:3003/album/{id}");
+
+  final response = await http.delete(url);
+
+  if (response.statusCode != 200) {
+    throw Exception(
+        'Failed to delete album. Status code: ${response.statusCode}');
   }
 }

@@ -9,7 +9,6 @@ class MyCustomScrollBehavior extends MaterialScrollBehavior {
         PointerDeviceKind.touch,
         PointerDeviceKind.mouse,
         PointerDeviceKind.stylus,
-        PointerDeviceKind.unknown
         // etc.
       };
 }

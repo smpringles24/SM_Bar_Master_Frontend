@@ -4,29 +4,6 @@ import 'package:sm_bar_master_frontend/ui/memory/memory_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:sm_bar_master_frontend/ui/new_album/new_album_page.dart';
 
-class Album {
-  final String imageUrl;
-
-  Album({required this.imageUrl});
-}
-
-List<Album> albumData = [
-  Album(imageUrl: 'lib/assets/album_sample01.png'),
-  Album(imageUrl: 'lib/assets/album_sample02.png'),
-  Album(imageUrl: 'lib/assets/album_sample01.png'),
-  Album(imageUrl: 'lib/assets/album_sample02.png'),
-  Album(imageUrl: 'lib/assets/album_sample01.png'),
-  Album(imageUrl: 'lib/assets/album_sample02.png'),
-  Album(imageUrl: 'lib/assets/album_sample01.png'),
-  Album(imageUrl: 'lib/assets/album_sample02.png'),
-  Album(imageUrl: 'lib/assets/album_sample01.png'),
-  Album(imageUrl: 'lib/assets/album_sample02.png'),
-  Album(imageUrl: 'lib/assets/album_sample01.png'),
-  Album(imageUrl: 'lib/assets/album_sample02.png'),
-  // ... 추가 앨범 데이터 ...
-  // 데이터가 15개 미만이면, 나머지 항목들은 미리보기 이미지를 사용합니다.
-];
-
 class MemoryView extends StatelessWidget {
   const MemoryView({super.key});
 
@@ -39,7 +16,7 @@ class MemoryView extends StatelessWidget {
           future: memoryViewModel.memoryPreviewImages,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator(); // 로딩 중 화면
+              return const CircularProgressIndicator();
             } else if (snapshot.hasError) {
               return Text('에러 발생: ${snapshot.error}');
             } else if (snapshot.hasData) {
