@@ -11,7 +11,6 @@ class NewAlbumPage extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => NewAlbumViewModel()),
-        ChangeNotifierProvider(create: (_) => NewAlbumDataViewModel()),
       ],
       child: const NewAlbumView(),
     );

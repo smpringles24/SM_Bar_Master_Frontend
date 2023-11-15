@@ -13,8 +13,6 @@ class NewAlbumView extends StatelessWidget {
   Widget build(BuildContext context) {
     NewAlbumViewModel newAlbumViewModel =
         Provider.of<NewAlbumViewModel>(context);
-    NewAlbumDataViewModel newAlbumDataViewModel =
-        Provider.of<NewAlbumDataViewModel>(context);
 
     return Scaffold(
       backgroundColor: Colors.black87,
@@ -45,7 +43,6 @@ class NewAlbumView extends StatelessWidget {
                   child: Stack(children: [
                     _AlbumEditPreview(
                       newAlbumViewModel: newAlbumViewModel,
-                      newAlbumData: newAlbumDataViewModel.newAlbumData,
                     ),
                   ]),
                 ),
@@ -115,10 +112,9 @@ class _IndicatorBar extends StatelessWidget {
 
 class _AlbumEditPreview extends StatelessWidget {
   final NewAlbumViewModel newAlbumViewModel;
-  final NewAlbumData newAlbumData;
 
   const _AlbumEditPreview(
-      {required this.newAlbumViewModel, required this.newAlbumData});
+      {required this.newAlbumViewModel});
 
   @override
   Widget build(BuildContext context) {
@@ -142,12 +138,12 @@ class _AlbumEditPreview extends StatelessWidget {
                         builder: (BuildContext context) {
                           return DataChangeDialog(
                               element: AlbumSelectedOption.date,
-                              newAlbumData: newAlbumData);
+                              albumModel: newAlbumViewModel.albumModel);
                         },
                       );
                     },
                     child: Text(
-                      newAlbumData.date,
+                      newAlbumViewModel.albumModel.date!,
                       style: const TextStyle(color: Colors.white, fontSize: 35),
                     ),
                   ),
@@ -166,12 +162,12 @@ class _AlbumEditPreview extends StatelessWidget {
                         builder: (BuildContext context) {
                           return DataChangeDialog(
                               element: AlbumSelectedOption.albumTitle,
-                              newAlbumData: newAlbumData);
+                              albumModel: newAlbumViewModel.albumModel);
                         },
                       );
                     },
                     child: Text(
-                      newAlbumData.albumTitle,
+                      newAlbumViewModel.albumModel.title!,
                       style: const TextStyle(color: Colors.white, fontSize: 35),
                     ),
                   ),
@@ -192,14 +188,14 @@ class _AlbumEditPreview extends StatelessWidget {
                       builder: (BuildContext context) {
                         return DataChangeDialog(
                             element: AlbumSelectedOption.backgroundColor,
-                            newAlbumData: newAlbumData);
+                            albumModel: newAlbumViewModel.albumModel);
                       },
                     );
                   },
                   child: Container(
                     width: 600,
                     height: 600,
-                    color: Color(int.parse(newAlbumData.backgroundColor)),
+                    color: Color(int.parse(newAlbumViewModel.albumModel.backgroundColor!)),
                     child: Stack(
                       alignment: Alignment.center,
                       children: <Widget>[
@@ -214,14 +210,13 @@ class _AlbumEditPreview extends StatelessWidget {
                                   context: context,
                                   builder: (BuildContext context) {
                                     return DataChangeDialog(
-                                        element:
-                                            AlbumSelectedOption.cdImage,
-                                        newAlbumData: newAlbumData);
+                                        element: AlbumSelectedOption.cdImage,
+                                        albumModel: newAlbumViewModel.albumModel);
                                   },
                                 );
                               },
                               child: Image.asset(
-                                newAlbumData.cdImage,
+                                newAlbumViewModel.albumModel.imageUrl!,
                                 fit: BoxFit.cover,
                                 width: 550,
                                 height: 550,
@@ -262,7 +257,7 @@ class _AlbumEditPreview extends StatelessWidget {
                       builder: (BuildContext context) {
                         return DataChangeDialog(
                             element: AlbumSelectedOption.backgroundColor,
-                            newAlbumData: newAlbumData);
+                            albumModel: newAlbumViewModel.albumModel);
                       },
                     );
                   },
@@ -283,14 +278,14 @@ class _AlbumEditPreview extends StatelessWidget {
                       builder: (BuildContext context) {
                         return DataChangeDialog(
                             element: AlbumSelectedOption.backgroundColor,
-                            newAlbumData: newAlbumData);
+                            albumModel: newAlbumViewModel.albumModel);
                       },
                     );
                   },
                   child: Container(
                     height: 600,
                     width: 600,
-                    color: Color(int.parse(newAlbumData.backgroundColor)),
+                    color: Color(int.parse(newAlbumViewModel.albumModel.backgroundColor!)),
                     child: Padding(
                       padding: const EdgeInsets.all(45),
                       child: Column(
@@ -310,12 +305,12 @@ class _AlbumEditPreview extends StatelessWidget {
                                       return DataChangeDialog(
                                           element:
                                               AlbumSelectedOption.cocktailName,
-                                          newAlbumData: newAlbumData);
+                                          albumModel: newAlbumViewModel.albumModel);
                                     },
                                   );
                                 },
                                 child: Text(
-                                  newAlbumData.cocktailName,
+                                  newAlbumViewModel.albumModel.title!,
                                   style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 32,
@@ -335,12 +330,12 @@ class _AlbumEditPreview extends StatelessWidget {
                                   builder: (BuildContext context) {
                                     return DataChangeDialog(
                                         element: AlbumSelectedOption.review,
-                                        newAlbumData: newAlbumData);
+                                        albumModel: newAlbumViewModel.albumModel);
                                   },
                                 );
                               },
                               child: Text(
-                                newAlbumData.review,
+                                newAlbumViewModel.albumModel.title!,
                                 style: const TextStyle(
                                     color: Colors.white, fontSize: 11),
                               ),

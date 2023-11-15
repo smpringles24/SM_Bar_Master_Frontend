@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:sm_bar_master_frontend/data/model/album_model.dart';
 import 'package:sm_bar_master_frontend/data/model/etc_model.dart';
 import 'package:sm_bar_master_frontend/ui/new_album/new_album_view_model.dart';
 
 class DataChangeDialog extends StatelessWidget {
-  final NewAlbumData newAlbumData;
+  final AlbumModel albumModel;
   final TextEditingController _controller = TextEditingController();
   late AlbumSelectedOption element;
 
   DataChangeDialog(
-      {required this.element, required this.newAlbumData, super.key});
+      {required this.element, required this.albumModel, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -42,22 +43,22 @@ class DataChangeDialog extends StatelessWidget {
                   onPressed: () {
                     switch (element) {
                       case AlbumSelectedOption.date:
-                        newAlbumData.date = _controller.text;
+                        albumModel.date = _controller.text;
                         break;
                       case AlbumSelectedOption.albumTitle:
-                        newAlbumData.albumTitle = _controller.text;
+                        albumModel.title = _controller.text;
                         break;
                       case AlbumSelectedOption.backgroundColor:
-                        newAlbumData.backgroundColor = _controller.text;
+                        albumModel.backgroundColor = _controller.text;
                         break;
                       case AlbumSelectedOption.cdImage:
-                        newAlbumData.cdImage = _controller.text;
+                        albumModel.title = _controller.text;
                         break;
                       case AlbumSelectedOption.cocktailName:
-                        newAlbumData.cocktailName = _controller.text;
+                        albumModel.title = _controller.text;
                         break;
                       case AlbumSelectedOption.review:
-                        newAlbumData.review = _controller.text;
+                        albumModel.title = _controller.text;
                         break;
                     }
                     Navigator.of(context).pop();

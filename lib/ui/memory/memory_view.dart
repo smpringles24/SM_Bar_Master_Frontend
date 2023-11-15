@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sm_bar_master_frontend/data/datasource/remote_datasource.dart';
 import 'package:sm_bar_master_frontend/ui/album/album_page.dart';
 import 'package:sm_bar_master_frontend/ui/memory/memory_view_model.dart';
 import 'package:provider/provider.dart';
@@ -29,10 +30,18 @@ class MemoryView extends StatelessWidget {
                       children: [
                         const Text(
                           "2019.09",
-                          style: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.w700),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 25,
+                              fontWeight: FontWeight.w700),
                         ),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            bool isDeleted = await deleteAlbum(snapshot.data![0].albumId!);
+                            if (isDeleted) {
+                              memoryViewModel.fetchdata();
+                            }
+                          },
                           icon: const Icon(
                             Icons.delete_forever,
                             color: Colors.white,
