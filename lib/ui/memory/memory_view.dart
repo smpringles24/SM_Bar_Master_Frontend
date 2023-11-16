@@ -37,7 +37,8 @@ class MemoryView extends StatelessWidget {
                         ),
                         IconButton(
                           onPressed: () async {
-                            bool isDeleted = await deleteAlbum(snapshot.data![0].albumId!);
+                            bool isDeleted =
+                                await deleteAlbum(snapshot.data![0].albumId!);
                             if (isDeleted) {
                               memoryViewModel.fetchdata();
                             }
@@ -77,20 +78,24 @@ class MemoryView extends StatelessWidget {
                               },
                               child: SizedBox(
                                 child: Image.asset(
-                                  "lib/assets/placeholder.png",
+                                  snapshot.data![index].imageUrl!,
                                   fit: BoxFit.cover,
                                 ),
                               ),
                             );
                           } else {
                             return ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
+                              onPressed: () async {
+                                bool result = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => const NewAlbumPage(),
                                   ),
                                 );
+
+                                if (result) {
+                                  await memoryViewModel.fetchdata();
+                                }
                               },
                               child: const Text("앨범 추가"),
                             );

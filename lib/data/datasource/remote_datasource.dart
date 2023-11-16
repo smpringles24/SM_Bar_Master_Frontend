@@ -2,12 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:sm_bar_master_frontend/data/model/album_model.dart';
 import 'package:sm_bar_master_frontend/data/model/album_preview_image_model.dart';
-import 'package:sm_bar_master_frontend/ui/new_album/new_album_view_model.dart';
 
-/*
-Future<void> createAlbum(NewAlbumData newAlbumData) async {
-  //엘범 생성
-
+Future<bool> createAlbum(AlbumModel albumModel) async {
   final url = Uri.parse("http://localhost:3003/album");
 
   final response = await http.post(
@@ -15,15 +11,18 @@ Future<void> createAlbum(NewAlbumData newAlbumData) async {
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
-    body: //jsonEncode(newAlbumData.toJson()),
+    body: jsonEncode(albumModel.toJson()),
   );
 
-  if (response.statusCode != 200) {
-    throw Exception(
-        'Failed to create album. Status code: ${response.statusCode}');
+  if (response.statusCode == 201) {
+    print('create album success');
+    return true;
+  } else {
+    return false;
+    // throw Exception(
+    //     'Failed to create album. Status code: ${response.statusCode}');
   }
 }
-*/
 Future<List<AlbumPreviewImageModel>> fetchAllAlbumPreviewImage() async {
   final url = Uri.parse("http://localhost:3003/album/preview");
 

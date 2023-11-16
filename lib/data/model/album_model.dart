@@ -7,34 +7,11 @@ class AlbumModel {
   List<SongEntities>? songEntities;
 
   AlbumModel(
-      {this.albumId,
-      this.imageUrl = 'lib/assets/placeholder.png',
+      {this.imageUrl = 'lib/assets/placeholder.png',
       this.title = 'No Title',
       this.date = '2099.99.99',
       this.backgroundColor = '0xFF475C66',
       this.songEntities = const <SongEntities>[]});
-
-
-/*
-class NewAlbumData {
-  late String albumTitle;
-  late String date;
-  late String backgroundColor;
-
-  late String cdImage;
-  late String cocktailName;
-  late String review;
-
-  NewAlbumData({
-    this.date = '123',
-    this.albumTitle = '132',
-    this.backgroundColor = '0xFF475C66',
-    this.cdImage = 'lib/assets/user_img01.jpg',
-    this.cocktailName = '234235',
-    this.review = 'asd',
-  });
-}
-*/
 
   AlbumModel.fromJson(Map<String, dynamic> json) {
     albumId = json['album_id'];
@@ -67,18 +44,18 @@ class NewAlbumData {
 class SongEntities {
   int? songId;
   String? imageUrl;
-  String? imageData;
+  String? imageData;    //TODO - 아직 사용 안함
   String? title;
   String? content;
-  int? score;
+  int? score;           //TODO - 아직 사용 안함
 
   SongEntities(
       {this.songId,
       this.imageUrl,
-      this.imageData,
+      this.imageData = 'some image data',
       this.title,
       this.content,
-      this.score});
+      this.score = 5});
 
   SongEntities.fromJson(Map<String, dynamic> json) {
     songId = json['song_id'];

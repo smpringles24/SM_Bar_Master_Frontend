@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sm_bar_master_frontend/data/model/album_model.dart';
 import 'package:sm_bar_master_frontend/data/model/etc_model.dart';
-import 'package:sm_bar_master_frontend/ui/new_album/new_album_view_model.dart';
 
 class DataChangeDialog extends StatelessWidget {
-  final AlbumModel albumModel;
+  AlbumModel albumModel;
   final TextEditingController _controller = TextEditingController();
   late AlbumSelectedOption element;
 
@@ -42,23 +41,26 @@ class DataChangeDialog extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {
                     switch (element) {
-                      case AlbumSelectedOption.date:
+                      case AlbumSelectedOption.albumDate:
                         albumModel.date = _controller.text;
                         break;
                       case AlbumSelectedOption.albumTitle:
                         albumModel.title = _controller.text;
                         break;
+                      case AlbumSelectedOption.albumImage:
+                        albumModel.imageUrl = _controller.text;
+                        break;
                       case AlbumSelectedOption.backgroundColor:
                         albumModel.backgroundColor = _controller.text;
                         break;
                       case AlbumSelectedOption.cdImage:
-                        albumModel.title = _controller.text;
+                        albumModel.songEntities![0].imageUrl = _controller.text;
                         break;
-                      case AlbumSelectedOption.cocktailName:
-                        albumModel.title = _controller.text;
+                      case AlbumSelectedOption.cdTitle:
+                        albumModel.songEntities![0].title = _controller.text;
                         break;
-                      case AlbumSelectedOption.review:
-                        albumModel.title = _controller.text;
+                      case AlbumSelectedOption.cdReview:
+                        albumModel.songEntities![0].content = _controller.text;
                         break;
                     }
                     Navigator.of(context).pop();
@@ -76,18 +78,19 @@ class DataChangeDialog extends StatelessWidget {
 
 /// 영어로 된 열거형을 한글로 바꿔주는 함수
 String elementToKorean(AlbumSelectedOption element) {
-  if (element == AlbumSelectedOption.date) {
+  if (element == AlbumSelectedOption.albumDate) {
     return '날짜';
-  } else if (element == AlbumSelectedOption.albumTitle)
+  } else if (element == AlbumSelectedOption.albumTitle) {
     return '앨범 제목';
-  else if (element == AlbumSelectedOption.backgroundColor)
+  } else if (element == AlbumSelectedOption.backgroundColor) {
     return '배경색';
-  else if (element == AlbumSelectedOption.cdImage)
+  } else if (element == AlbumSelectedOption.cdImage) {
     return 'CD 이미지';
-  else if (element == AlbumSelectedOption.cocktailName)
+  } else if (element == AlbumSelectedOption.cdTitle) {
     return '칵테일 이름';
-  else if (element == AlbumSelectedOption.review)
+  } else if (element == AlbumSelectedOption.cdReview) {
     return '리뷰';
-  else
+  } else {
     return '오류';
+  }
 }

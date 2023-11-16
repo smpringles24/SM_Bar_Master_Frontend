@@ -1,8 +1,9 @@
 enum AlbumSelectedOption {
   albumTitle,
-  date,
+  albumDate,
+  albumImage,
   backgroundColor,
   cdImage,
-  cocktailName,
-  review
+  cdTitle,
+  cdReview,
 }

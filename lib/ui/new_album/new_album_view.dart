@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_arc_text/flutter_arc_text.dart';
+import 'package:sm_bar_master_frontend/data/datasource/remote_datasource.dart';
 import 'package:sm_bar_master_frontend/data/model/etc_model.dart';
 import 'package:sm_bar_master_frontend/ui/new_album/data_change_dialog.dart';
 import 'package:sm_bar_master_frontend/ui/new_album/new_album_view_model.dart';
@@ -51,8 +52,14 @@ class NewAlbumView extends StatelessWidget {
                   child: SizedBox(
                     width: double.infinity,
                     child: TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
+                      onPressed: () async {
+                        bool isCreated =
+                            await createAlbum(newAlbumViewModel.albumModel);
+                        if (isCreated) {
+                          Navigator.pop(context, true);
+                        } else {
+                          Navigator.pop(context, false);
+                        }
                       },
                       child: const Text(
                         "추가하기!",
@@ -86,7 +93,7 @@ class _IndicatorBar extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          newAlbumViewModel.nowSelected == AlbumSelectedOption.date
+          newAlbumViewModel.nowSelected == AlbumSelectedOption.albumDate
               ? const Text("날짜", style: TextStyle(fontSize: 45))
               : const Text("날짜", style: TextStyle(fontSize: 25)),
           newAlbumViewModel.nowSelected == AlbumSelectedOption.albumTitle
@@ -98,10 +105,10 @@ class _IndicatorBar extends StatelessWidget {
           newAlbumViewModel.nowSelected == AlbumSelectedOption.cdImage
               ? const Text("CD 이미지", style: TextStyle(fontSize: 45))
               : const Text("CD 이미지", style: TextStyle(fontSize: 25)),
-          newAlbumViewModel.nowSelected == AlbumSelectedOption.cocktailName
+          newAlbumViewModel.nowSelected == AlbumSelectedOption.cdTitle
               ? const Text("칵테일 이름", style: TextStyle(fontSize: 45))
               : const Text("칵테일 이름", style: TextStyle(fontSize: 25)),
-          newAlbumViewModel.nowSelected == AlbumSelectedOption.review
+          newAlbumViewModel.nowSelected == AlbumSelectedOption.cdReview
               ? const Text("한줄평", style: TextStyle(fontSize: 45))
               : const Text("한줄평", style: TextStyle(fontSize: 25)),
         ],
@@ -113,8 +120,7 @@ class _IndicatorBar extends StatelessWidget {
 class _AlbumEditPreview extends StatelessWidget {
   final NewAlbumViewModel newAlbumViewModel;
 
-  const _AlbumEditPreview(
-      {required this.newAlbumViewModel});
+  const _AlbumEditPreview({required this.newAlbumViewModel});
 
   @override
   Widget build(BuildContext context) {
@@ -130,14 +136,14 @@ class _AlbumEditPreview extends StatelessWidget {
               children: [
                 MouseRegion(
                   onEnter: (_) => newAlbumViewModel
-                      .changeSelectedOption(AlbumSelectedOption.date),
+                      .changeSelectedOption(AlbumSelectedOption.albumDate),
                   child: InkWell(
                     onTap: () {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return DataChangeDialog(
-                              element: AlbumSelectedOption.date,
+                              element: AlbumSelectedOption.albumDate,
                               albumModel: newAlbumViewModel.albumModel);
                         },
                       );
@@ -195,7 +201,8 @@ class _AlbumEditPreview extends StatelessWidget {
                   child: Container(
                     width: 600,
                     height: 600,
-                    color: Color(int.parse(newAlbumViewModel.albumModel.backgroundColor!)),
+                    color: Color(int.parse(
+                        newAlbumViewModel.albumModel.backgroundColor!)),
                     child: Stack(
                       alignment: Alignment.center,
                       children: <Widget>[
@@ -211,7 +218,8 @@ class _AlbumEditPreview extends StatelessWidget {
                                   builder: (BuildContext context) {
                                     return DataChangeDialog(
                                         element: AlbumSelectedOption.cdImage,
-                                        albumModel: newAlbumViewModel.albumModel);
+                                        albumModel:
+                                            newAlbumViewModel.albumModel);
                                   },
                                 );
                               },
@@ -285,7 +293,8 @@ class _AlbumEditPreview extends StatelessWidget {
                   child: Container(
                     height: 600,
                     width: 600,
-                    color: Color(int.parse(newAlbumViewModel.albumModel.backgroundColor!)),
+                    color: Color(int.parse(
+                        newAlbumViewModel.albumModel.backgroundColor!)),
                     child: Padding(
                       padding: const EdgeInsets.all(45),
                       child: Column(
@@ -296,7 +305,7 @@ class _AlbumEditPreview extends StatelessWidget {
                             child: MouseRegion(
                               onEnter: (_) =>
                                   newAlbumViewModel.changeSelectedOption(
-                                      AlbumSelectedOption.cocktailName),
+                                      AlbumSelectedOption.cdTitle),
                               child: InkWell(
                                 onTap: () {
                                   showDialog(
@@ -304,8 +313,9 @@ class _AlbumEditPreview extends StatelessWidget {
                                     builder: (BuildContext context) {
                                       return DataChangeDialog(
                                           element:
-                                              AlbumSelectedOption.cocktailName,
-                                          albumModel: newAlbumViewModel.albumModel);
+                                              AlbumSelectedOption.cdTitle,
+                                          albumModel:
+                                              newAlbumViewModel.albumModel);
                                     },
                                   );
                                 },
@@ -322,20 +332,21 @@ class _AlbumEditPreview extends StatelessWidget {
                           MouseRegion(
                             onEnter: (_) =>
                                 newAlbumViewModel.changeSelectedOption(
-                                    AlbumSelectedOption.review),
+                                    AlbumSelectedOption.cdReview),
                             child: InkWell(
                               onTap: () {
                                 showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
                                     return DataChangeDialog(
-                                        element: AlbumSelectedOption.review,
-                                        albumModel: newAlbumViewModel.albumModel);
+                                        element: AlbumSelectedOption.cdReview,
+                                        albumModel:
+                                            newAlbumViewModel.albumModel);
                                   },
                                 );
                               },
                               child: Text(
-                                newAlbumViewModel.albumModel.title!,
+                                newAlbumViewModel.albumModel.songEntities![0].content!,
                                 style: const TextStyle(
                                     color: Colors.white, fontSize: 11),
                               ),

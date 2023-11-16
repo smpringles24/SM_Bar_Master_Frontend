@@ -8,13 +8,12 @@ class MemoryViewModel with ChangeNotifier {
   }
 
   Future<List<AlbumPreviewImageModel>>? _memoryPreviewImages;
-
   Future<List<AlbumPreviewImageModel>>? get memoryPreviewImages =>
       _memoryPreviewImages;
 
   Future<void> fetchdata() async {
     _memoryPreviewImages = fetchAllAlbumPreviewImage();
-    await _memoryPreviewImages; // 데이터 로딩 완료 대기
-    notifyListeners(); // 데이터 변경 알림
+    await _memoryPreviewImages;
+    notifyListeners();
   }
 }
