@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:sm_bar_master_frontend/data/model/album_model.dart';
 import 'package:sm_bar_master_frontend/data/model/etc_model.dart';
 
@@ -21,7 +22,7 @@ class DataChangeDialog extends StatelessWidget {
       content: Builder(builder: (context) {
         switch (element) {
           case AlbumSelectedOption.backgroundColor:
-            return const ColorEditContainer();
+            return ColorEditContainer(albumModel: albumModel);
           default:
             return SimpleEditContainer(
                 controller: _controller,
@@ -35,15 +36,33 @@ class DataChangeDialog extends StatelessWidget {
 }
 
 class ColorEditContainer extends StatelessWidget {
-  const ColorEditContainer({super.key});
+  final AlbumModel albumModel;
+  final Color currentColor = const Color(0xff123456);
+
+  const ColorEditContainer({required this.albumModel, super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 200,
-      width: 350,
       color: Colors.black38,
-      child: const Placeholder(),
+      child: Column(
+        children: [
+          ColorPicker(
+            pickerColor: currentColor,
+            onColorChanged: (Color color) {
+              String colorString =
+                  '0x${color.value.toRadixString(16).padLeft(8, '0')}';
+              albumModel.backgroundColor = colorString;
+            },
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('수정'),
+          ),
+        ],
+      ),
     );
   }
 }
