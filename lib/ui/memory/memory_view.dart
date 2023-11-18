@@ -11,6 +11,7 @@ class MemoryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final memoryViewModel = Provider.of<MemoryViewModel>(context);
+
     return Scaffold(
       backgroundColor: Colors.black87,
       body: FutureBuilder(
@@ -37,10 +38,16 @@ class MemoryView extends StatelessWidget {
                         ),
                         IconButton(
                           onPressed: () async {
-                            bool isDeleted =
-                                await deleteAlbum(snapshot.data![0].albumId!);
-                            if (isDeleted) {
-                              memoryViewModel.fetchdata();
+                            if (snapshot.data!.isNotEmpty) {
+                              bool isDeleted =
+                                  await deleteAlbum(snapshot.data![0].albumId!);
+                              if (isDeleted) {
+                                memoryViewModel.fetchdata();
+                              } else {
+                                print('삭제 실패');
+                              }
+                            } else {
+                              //TODO: sncak bar로 알림
                             }
                           },
                           icon: const Icon(

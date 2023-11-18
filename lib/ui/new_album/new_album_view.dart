@@ -6,14 +6,16 @@ import 'package:sm_bar_master_frontend/data/model/etc_model.dart';
 import 'package:sm_bar_master_frontend/ui/new_album/data_change_dialog.dart';
 import 'package:sm_bar_master_frontend/ui/new_album/new_album_view_model.dart';
 import 'package:provider/provider.dart';
+import 'package:sm_bar_master_frontend/data/model/song_entity.dart';
 
 class NewAlbumView extends StatelessWidget {
   const NewAlbumView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    NewAlbumViewModel newAlbumViewModel =
-        Provider.of<NewAlbumViewModel>(context);
+    NewAlbumViewModel newAlbumViewModel = context.watch<NewAlbumViewModel>();
+    NewAlbumViewModel newAlbumViewModelHandler =
+        context.read<NewAlbumViewModel>();
 
     return Scaffold(
       backgroundColor: Colors.black87,
@@ -23,6 +25,15 @@ class NewAlbumView extends StatelessWidget {
           Expanded(
             child: Column(
               children: [
+                IconButton(
+                    onPressed: () {
+                      SongEntity songEntity = SongEntity();
+                      newAlbumViewModelHandler.addSongEntity(songEntity);
+
+                      print(newAlbumViewModel.albumModel.songEntities!.length);
+                      print(newAlbumViewModel.albumModel.songEntities![0].content);
+                    },
+                    icon: const Icon(Icons.add)),
                 Expanded(
                   flex: 1,
                   child: Container(
@@ -232,11 +243,12 @@ class _AlbumEditPreview extends StatelessWidget {
                             ),
                           ),
                         ),
+                        // 중앙 뚫린 부분의 크기 조절
                         Container(
-                          width: 70, // 중앙 뚫린 부분의 크기 조절
+                          width: 70,
                           height: 70,
                           decoration: const BoxDecoration(
-                            color: Colors.white, // 중앙 색상
+                            color: Colors.white,
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -312,15 +324,14 @@ class _AlbumEditPreview extends StatelessWidget {
                                     context: context,
                                     builder: (BuildContext context) {
                                       return DataChangeDialog(
-                                          element:
-                                              AlbumSelectedOption.cdTitle,
+                                          element: AlbumSelectedOption.cdTitle,
                                           albumModel:
                                               newAlbumViewModel.albumModel);
                                     },
                                   );
                                 },
                                 child: Text(
-                                  newAlbumViewModel.albumModel.title!,
+                                  newAlbumViewModel.albumModel.songEntities![0].title!,
                                   style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 32,

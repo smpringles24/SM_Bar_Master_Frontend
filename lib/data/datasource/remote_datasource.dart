@@ -15,7 +15,6 @@ Future<bool> createAlbum(AlbumModel albumModel) async {
   );
 
   if (response.statusCode == 201) {
-    print('create album success');
     return true;
   } else {
     return false;
@@ -23,6 +22,7 @@ Future<bool> createAlbum(AlbumModel albumModel) async {
     //     'Failed to create album. Status code: ${response.statusCode}');
   }
 }
+
 Future<List<AlbumPreviewImageModel>> fetchAllAlbumPreviewImage() async {
   final url = Uri.parse("http://localhost:3003/album/preview");
 
@@ -45,10 +45,10 @@ Future<bool> deleteAlbum(int id) async {
   final url = Uri.parse("http://localhost:3003/album/$id");
 
   final response = await http.delete(url);
-
+  
   if (response.statusCode == 200) {
     return true;
   } else {
-    return true;
+    return false;
   }
 }
