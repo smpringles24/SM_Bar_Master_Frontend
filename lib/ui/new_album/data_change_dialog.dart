@@ -6,9 +6,13 @@ class DataChangeDialog extends StatelessWidget {
   AlbumModel albumModel;
   final TextEditingController _controller = TextEditingController();
   late AlbumSelectedOption element;
+  final int nowSongIndex;
 
   DataChangeDialog(
-      {required this.element, required this.albumModel, super.key});
+      {required this.element,
+      required this.albumModel,
+      required this.nowSongIndex,
+      super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -54,13 +58,13 @@ class DataChangeDialog extends StatelessWidget {
                         albumModel.backgroundColor = _controller.text;
                         break;
                       case AlbumSelectedOption.cdImage:
-                        albumModel.songEntities![0].imageUrl = _controller.text;
+                        albumModel.songEntities![nowSongIndex].imageUrl = _controller.text;
                         break;
                       case AlbumSelectedOption.cdTitle:
-                        albumModel.songEntities![0].title = _controller.text;
+                        albumModel.songEntities![nowSongIndex].title = _controller.text;
                         break;
                       case AlbumSelectedOption.cdReview:
-                        albumModel.songEntities![0].content = _controller.text;
+                        albumModel.songEntities![nowSongIndex].content = _controller.text;
                         break;
                     }
                     Navigator.of(context).pop();

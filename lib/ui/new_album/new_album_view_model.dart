@@ -14,6 +14,16 @@ class NewAlbumViewModel with ChangeNotifier {
 
   //############
 
+  int _nowSongIndex = 0;
+  int get nowSongIndex => _nowSongIndex;
+
+  setNowSongIndex(int index) {
+    _nowSongIndex = index;
+    notifyListeners();
+  }
+
+  //############
+
   AlbumModel _albumModel = AlbumModel();
   AlbumModel get albumModel => _albumModel;
 

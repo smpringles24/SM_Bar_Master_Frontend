@@ -5,5 +5,5 @@ enum AlbumSelectedOption {
   backgroundColor,
   cdImage,
   cdTitle,
-  cdReview,
+  cdReview
 }

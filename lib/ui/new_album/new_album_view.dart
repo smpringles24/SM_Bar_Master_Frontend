@@ -25,15 +25,6 @@ class NewAlbumView extends StatelessWidget {
           Expanded(
             child: Column(
               children: [
-                IconButton(
-                    onPressed: () {
-                      SongEntity songEntity = SongEntity();
-                      newAlbumViewModelHandler.addSongEntity(songEntity);
-
-                      print(newAlbumViewModel.albumModel.songEntities!.length);
-                      print(newAlbumViewModel.albumModel.songEntities![0].content);
-                    },
-                    icon: const Icon(Icons.add)),
                 Expanded(
                   flex: 1,
                   child: Container(
@@ -52,11 +43,67 @@ class NewAlbumView extends StatelessWidget {
                 ),
                 Expanded(
                   flex: 6,
-                  child: Stack(children: [
-                    _AlbumEditPreview(
-                      newAlbumViewModel: newAlbumViewModel,
-                    ),
-                  ]),
+                  child: Stack(
+                    children: [
+                      Center(
+                        child: _AlbumEditPreview(
+                          newAlbumViewModel: newAlbumViewModel,
+                          newAlbumViewModelHandler: newAlbumViewModelHandler,
+                        ),
+                      ),
+                      Center(
+                        child: SizedBox(
+                          width: 1220,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              IconButton(
+                                constraints: const BoxConstraints.tightFor(
+                                  width: 100,
+                                  height: 100,
+                                ),
+                                onPressed: () {
+                                  if (newAlbumViewModel.nowSongIndex > 0) {
+                                    newAlbumViewModelHandler.setNowSongIndex(
+                                        newAlbumViewModel.nowSongIndex - 1);
+                                  }
+                                },
+                                icon: const Icon(
+                                  Icons.arrow_left,
+                                  color: Colors.greenAccent,
+                                  size: 70,
+                                ),
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                              ),
+                              IconButton(
+                                constraints: const BoxConstraints.tightFor(
+                                  width: 100,
+                                  height: 100,
+                                ),
+                                onPressed: () {
+                                  if (newAlbumViewModel.nowSongIndex <
+                                      newAlbumViewModel
+                                              .albumModel.songEntities!.length -
+                                          1) {
+                                    newAlbumViewModelHandler.setNowSongIndex(
+                                        newAlbumViewModel.nowSongIndex + 1);
+                                  }
+                                },
+                                icon: const Icon(
+                                  Icons.arrow_right,
+                                  color: Colors.greenAccent,
+                                  size: 70,
+                                ),
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 Expanded(
                   flex: 1,
@@ -130,8 +177,11 @@ class _IndicatorBar extends StatelessWidget {
 
 class _AlbumEditPreview extends StatelessWidget {
   final NewAlbumViewModel newAlbumViewModel;
+  final NewAlbumViewModel newAlbumViewModelHandler;
 
-  const _AlbumEditPreview({required this.newAlbumViewModel});
+  const _AlbumEditPreview(
+      {required this.newAlbumViewModel,
+      required this.newAlbumViewModelHandler});
 
   @override
   Widget build(BuildContext context) {
@@ -144,51 +194,89 @@ class _AlbumEditPreview extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                MouseRegion(
-                  onEnter: (_) => newAlbumViewModel
-                      .changeSelectedOption(AlbumSelectedOption.albumDate),
-                  child: InkWell(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return DataChangeDialog(
-                              element: AlbumSelectedOption.albumDate,
-                              albumModel: newAlbumViewModel.albumModel);
+                Row(
+                  children: [
+                    MouseRegion(
+                      onEnter: (_) => newAlbumViewModel
+                          .changeSelectedOption(AlbumSelectedOption.albumDate),
+                      child: InkWell(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return DataChangeDialog(
+                                  element: AlbumSelectedOption.albumDate,
+                                  albumModel: newAlbumViewModel.albumModel,
+                                  nowSongIndex: newAlbumViewModel.nowSongIndex);
+                            },
+                          );
                         },
-                      );
-                    },
-                    child: Text(
-                      newAlbumViewModel.albumModel.date!,
-                      style: const TextStyle(color: Colors.white, fontSize: 35),
+                        child: Text(
+                          newAlbumViewModel.albumModel.date!,
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 35),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                const Text(
-                  ' - ',
-                  style: TextStyle(color: Colors.white, fontSize: 35),
-                ),
-                MouseRegion(
-                  onEnter: (_) => newAlbumViewModel
-                      .changeSelectedOption(AlbumSelectedOption.albumTitle),
-                  child: InkWell(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return DataChangeDialog(
-                              element: AlbumSelectedOption.albumTitle,
-                              albumModel: newAlbumViewModel.albumModel);
+                    const Text(
+                      ' - ',
+                      style: TextStyle(color: Colors.white, fontSize: 35),
+                    ),
+                    MouseRegion(
+                      onEnter: (_) => newAlbumViewModel
+                          .changeSelectedOption(AlbumSelectedOption.albumTitle),
+                      child: InkWell(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return DataChangeDialog(
+                                  element: AlbumSelectedOption.albumTitle,
+                                  albumModel: newAlbumViewModel.albumModel,
+                                  nowSongIndex: newAlbumViewModel.nowSongIndex);
+                            },
+                          );
                         },
-                      );
-                    },
-                    child: Text(
-                      newAlbumViewModel.albumModel.title!,
-                      style: const TextStyle(color: Colors.white, fontSize: 35),
+                        child: Text(
+                          newAlbumViewModel.albumModel.title!,
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 35),
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
+                Row(
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          newAlbumViewModelHandler.addSongEntity(SongEntity());
+                          if (newAlbumViewModel.nowSongIndex <
+                              newAlbumViewModel
+                                      .albumModel.songEntities!.length -
+                                  1) {
+                            newAlbumViewModelHandler.setNowSongIndex(
+                                newAlbumViewModel.nowSongIndex + 1);
+                          }
+                        },
+                        icon: const Icon(
+                          Icons.add,
+                          size: 35,
+                          color: Colors.white,
+                        )),
+                    IconButton(
+                        onPressed: () {
+                          //TODO: Song삭제
+                        },
+                        icon: const Icon(
+                          Icons.delete_forever,
+                          size: 35,
+                          color: Colors.white,
+                        )),
+                  ],
+                )
               ],
             ),
           ),
@@ -205,7 +293,8 @@ class _AlbumEditPreview extends StatelessWidget {
                       builder: (BuildContext context) {
                         return DataChangeDialog(
                             element: AlbumSelectedOption.backgroundColor,
-                            albumModel: newAlbumViewModel.albumModel);
+                            albumModel: newAlbumViewModel.albumModel,
+                            nowSongIndex: newAlbumViewModel.nowSongIndex);
                       },
                     );
                   },
@@ -230,7 +319,9 @@ class _AlbumEditPreview extends StatelessWidget {
                                     return DataChangeDialog(
                                         element: AlbumSelectedOption.cdImage,
                                         albumModel:
-                                            newAlbumViewModel.albumModel);
+                                            newAlbumViewModel.albumModel,
+                                        nowSongIndex:
+                                            newAlbumViewModel.nowSongIndex);
                                   },
                                 );
                               },
@@ -277,7 +368,8 @@ class _AlbumEditPreview extends StatelessWidget {
                       builder: (BuildContext context) {
                         return DataChangeDialog(
                             element: AlbumSelectedOption.backgroundColor,
-                            albumModel: newAlbumViewModel.albumModel);
+                            albumModel: newAlbumViewModel.albumModel,
+                            nowSongIndex: newAlbumViewModel.nowSongIndex);
                       },
                     );
                   },
@@ -298,7 +390,8 @@ class _AlbumEditPreview extends StatelessWidget {
                       builder: (BuildContext context) {
                         return DataChangeDialog(
                             element: AlbumSelectedOption.backgroundColor,
-                            albumModel: newAlbumViewModel.albumModel);
+                            albumModel: newAlbumViewModel.albumModel,
+                            nowSongIndex: newAlbumViewModel.nowSongIndex);
                       },
                     );
                   },
@@ -326,12 +419,18 @@ class _AlbumEditPreview extends StatelessWidget {
                                       return DataChangeDialog(
                                           element: AlbumSelectedOption.cdTitle,
                                           albumModel:
-                                              newAlbumViewModel.albumModel);
+                                              newAlbumViewModel.albumModel,
+                                          nowSongIndex:
+                                              newAlbumViewModel.nowSongIndex);
                                     },
                                   );
                                 },
                                 child: Text(
-                                  newAlbumViewModel.albumModel.songEntities![0].title!,
+                                  newAlbumViewModel
+                                      .albumModel
+                                      .songEntities![
+                                          newAlbumViewModel.nowSongIndex]
+                                      .title!,
                                   style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 32,
@@ -352,12 +451,18 @@ class _AlbumEditPreview extends StatelessWidget {
                                     return DataChangeDialog(
                                         element: AlbumSelectedOption.cdReview,
                                         albumModel:
-                                            newAlbumViewModel.albumModel);
+                                            newAlbumViewModel.albumModel,
+                                        nowSongIndex:
+                                            newAlbumViewModel.nowSongIndex);
                                   },
                                 );
                               },
                               child: Text(
-                                newAlbumViewModel.albumModel.songEntities![0].content!,
+                                newAlbumViewModel
+                                    .albumModel
+                                    .songEntities![
+                                        newAlbumViewModel.nowSongIndex]
+                                    .content!,
                                 style: const TextStyle(
                                     color: Colors.white, fontSize: 11),
                               ),
