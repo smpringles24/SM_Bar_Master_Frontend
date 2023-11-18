@@ -18,64 +18,109 @@ class DataChangeDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('값 수정하기'),
-      content: Container(
-        height: 200,
-        width: 350,
-        color: Colors.black38,
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _controller,
-                        decoration: InputDecoration(
-                          border: const OutlineInputBorder(),
-                          hintText: elementToKorean(element),
-                        ),
+      content: Builder(builder: (context) {
+        switch (element) {
+          case AlbumSelectedOption.backgroundColor:
+            return const ColorEditContainer();
+          default:
+            return SimpleEditContainer(
+                controller: _controller,
+                element: element,
+                albumModel: albumModel,
+                nowSongIndex: nowSongIndex);
+        }
+      }),
+    );
+  }
+}
+
+class ColorEditContainer extends StatelessWidget {
+  const ColorEditContainer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 200,
+      width: 350,
+      color: Colors.black38,
+      child: const Placeholder(),
+    );
+  }
+}
+
+class SimpleEditContainer extends StatelessWidget {
+  const SimpleEditContainer({
+    super.key,
+    required TextEditingController controller,
+    required this.element,
+    required this.albumModel,
+    required this.nowSongIndex,
+  }) : _controller = controller;
+
+  final TextEditingController _controller;
+  final AlbumSelectedOption element;
+  final AlbumModel albumModel;
+  final int nowSongIndex;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 200,
+      width: 350,
+      color: Colors.black38,
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _controller,
+                      decoration: InputDecoration(
+                        border: const OutlineInputBorder(),
+                        hintText: elementToKorean(element),
                       ),
                     ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    switch (element) {
-                      case AlbumSelectedOption.albumDate:
-                        albumModel.date = _controller.text;
-                        break;
-                      case AlbumSelectedOption.albumTitle:
-                        albumModel.title = _controller.text;
-                        break;
-                      case AlbumSelectedOption.albumImage:
-                        albumModel.imageUrl = _controller.text;
-                        break;
-                      case AlbumSelectedOption.backgroundColor:
-                        albumModel.backgroundColor = _controller.text;
-                        break;
-                      case AlbumSelectedOption.cdImage:
-                        albumModel.songEntities![nowSongIndex].imageUrl =
-                            _controller.text;
-                        break;
-                      case AlbumSelectedOption.cdTitle:
-                        albumModel.songEntities![nowSongIndex].title =
-                            _controller.text;
-                        break;
-                      case AlbumSelectedOption.cdReview:
-                        albumModel.songEntities![nowSongIndex].content =
-                            _controller.text;
-                        break;
-                    }
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('수정'),
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  switch (element) {
+                    case AlbumSelectedOption.albumDate:
+                      albumModel.date = _controller.text;
+                      break;
+                    case AlbumSelectedOption.albumTitle:
+                      albumModel.title = _controller.text;
+                      break;
+                    case AlbumSelectedOption.albumImage:
+                      albumModel.imageUrl = _controller.text;
+                      break;
+                    case AlbumSelectedOption.backgroundColor:
+                      albumModel.backgroundColor = _controller.text;
+                      break;
+                    case AlbumSelectedOption.cdImage:
+                      albumModel.songEntities![nowSongIndex].imageUrl =
+                          _controller.text;
+                      break;
+                    case AlbumSelectedOption.cdTitle:
+                      albumModel.songEntities![nowSongIndex].title =
+                          _controller.text;
+                      break;
+                    case AlbumSelectedOption.cdReview:
+                      albumModel.songEntities![nowSongIndex].content =
+                          _controller.text;
+                      break;
+                  }
+                  Navigator.of(context).pop();
+                },
+                child: const Text('수정'),
+              ),
+            ],
           ),
         ),
       ),

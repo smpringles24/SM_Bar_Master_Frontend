@@ -36,4 +36,9 @@ class NewAlbumViewModel with ChangeNotifier {
     _albumModel.songEntities!.add(songEntity);
     notifyListeners();
   }
+
+  void removeSongEntity(int index) {
+    _albumModel.songEntities!.removeAt(index);
+    notifyListeners();
+  }
 }

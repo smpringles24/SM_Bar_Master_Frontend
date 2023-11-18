@@ -18,6 +18,7 @@ class NewAlbumView extends StatelessWidget {
         context.read<NewAlbumViewModel>();
 
     return WillPopScope(
+      //뒤로가기 프리징 방지
       onWillPop: () async {
         Navigator.pop(context, false);
         return false;
@@ -26,7 +27,7 @@ class NewAlbumView extends StatelessWidget {
         backgroundColor: Colors.black87,
         body: Row(
           children: [
-            _IndicatorBar(newAlbumViewModel: newAlbumViewModel),
+            _SelectionIndicatorBar(newAlbumViewModel: newAlbumViewModel),
             Expanded(
               child: Column(
                 children: [
@@ -61,55 +62,10 @@ class NewAlbumView extends StatelessWidget {
                                 ),
                         ),
                         Center(
-                          child: SizedBox(
-                            width: 1220,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                IconButton(
-                                  constraints: const BoxConstraints.tightFor(
-                                    width: 100,
-                                    height: 100,
-                                  ),
-                                  onPressed: () {
-                                    if (newAlbumViewModel.nowSongIndex >= 0) {
-                                      newAlbumViewModelHandler.setNowSongIndex(
-                                          newAlbumViewModel.nowSongIndex - 1);
-                                    }
-                                  },
-                                  icon: const Icon(
-                                    Icons.arrow_left,
-                                    color: Colors.greenAccent,
-                                    size: 70,
-                                  ),
-                                  splashColor: Colors.transparent,
-                                  highlightColor: Colors.transparent,
-                                ),
-                                IconButton(
-                                  constraints: const BoxConstraints.tightFor(
-                                    width: 100,
-                                    height: 100,
-                                  ),
-                                  onPressed: () {
-                                    if (newAlbumViewModel.nowSongIndex <
-                                        newAlbumViewModel.albumModel
-                                                .songEntities!.length -
-                                            1) {
-                                      newAlbumViewModelHandler.setNowSongIndex(
-                                          newAlbumViewModel.nowSongIndex + 1);
-                                    }
-                                  },
-                                  icon: const Icon(
-                                    Icons.arrow_right,
-                                    color: Colors.greenAccent,
-                                    size: 70,
-                                  ),
-                                  splashColor: Colors.transparent,
-                                  highlightColor: Colors.transparent,
-                                ),
-                              ],
-                            ),
-                          ),
+                          child: _PageController(
+                              newAlbumViewModel: newAlbumViewModel,
+                              newAlbumViewModelHandler:
+                                  newAlbumViewModelHandler),
                         ),
                       ],
                     ),
@@ -143,8 +99,69 @@ class NewAlbumView extends StatelessWidget {
   }
 }
 
-class _IndicatorBar extends StatelessWidget {
-  const _IndicatorBar({required this.newAlbumViewModel});
+class _PageController extends StatelessWidget {
+  const _PageController({
+    required this.newAlbumViewModel,
+    required this.newAlbumViewModelHandler,
+  });
+
+  final NewAlbumViewModel newAlbumViewModel;
+  final NewAlbumViewModel newAlbumViewModelHandler;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 1220,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(
+            constraints: const BoxConstraints.tightFor(
+              width: 100,
+              height: 100,
+            ),
+            onPressed: () {
+              if (newAlbumViewModel.nowSongIndex >= 0) {
+                newAlbumViewModelHandler
+                    .setNowSongIndex(newAlbumViewModel.nowSongIndex - 1);
+              }
+            },
+            icon: const Icon(
+              Icons.arrow_left,
+              color: Colors.greenAccent,
+              size: 70,
+            ),
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+          ),
+          IconButton(
+            constraints: const BoxConstraints.tightFor(
+              width: 100,
+              height: 100,
+            ),
+            onPressed: () {
+              if (newAlbumViewModel.nowSongIndex <
+                  newAlbumViewModel.albumModel.songEntities!.length - 1) {
+                newAlbumViewModelHandler
+                    .setNowSongIndex(newAlbumViewModel.nowSongIndex + 1);
+              }
+            },
+            icon: const Icon(
+              Icons.arrow_right,
+              color: Colors.greenAccent,
+              size: 70,
+            ),
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SelectionIndicatorBar extends StatelessWidget {
+  const _SelectionIndicatorBar({required this.newAlbumViewModel});
 
   final NewAlbumViewModel newAlbumViewModel;
 
@@ -192,6 +209,9 @@ class _SongsEditPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String songIndexText =
+        '${newAlbumViewModel.nowSongIndex + 1} / ${newAlbumViewModel.albumModel.songEntities!.length}';
+
     return SizedBox(
       width: 1220,
       child: Column(
@@ -258,7 +278,7 @@ class _SongsEditPreview extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      '${newAlbumViewModel.nowSongIndex + 1} / ${newAlbumViewModel.albumModel.songEntities!.length}',
+                      songIndexText,
                       style: const TextStyle(color: Colors.white, fontSize: 35),
                     ),
                     IconButton(
@@ -279,7 +299,18 @@ class _SongsEditPreview extends StatelessWidget {
                         )),
                     IconButton(
                         onPressed: () {
-                          //TODO: Song삭제
+                          if (newAlbumViewModel
+                                  .albumModel.songEntities!.length ==
+                              1) return;
+                          if (newAlbumViewModel.nowSongIndex ==
+                              newAlbumViewModel
+                                      .albumModel.songEntities!.length -
+                                  1) {
+                            newAlbumViewModelHandler.setNowSongIndex(
+                                newAlbumViewModel.nowSongIndex - 1);
+                          }
+                          newAlbumViewModelHandler
+                              .removeSongEntity(newAlbumViewModel.nowSongIndex);
                         },
                         icon: const Icon(
                           Icons.remove,
