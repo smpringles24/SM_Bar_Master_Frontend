@@ -36,11 +36,4 @@ class NewAlbumViewModel with ChangeNotifier {
     _albumModel.songEntities!.add(songEntity);
     notifyListeners();
   }
-
-  SongEntity getSongEntity(int index) {
-    if (_albumModel.songEntities!.length <= index) {
-      print('songEntity index out of range');
-    }
-    return _albumModel.songEntities![index];
-  }
 }

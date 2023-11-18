@@ -151,6 +151,7 @@ class _IndicatorBar extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          const Text("--- 앨범 ---", style: TextStyle(fontSize: 40)),
           newAlbumViewModel.nowSelected == AlbumSelectedOption.albumDate
               ? const Text("날짜", style: TextStyle(fontSize: 45))
               : const Text("날짜", style: TextStyle(fontSize: 25)),
@@ -160,9 +161,10 @@ class _IndicatorBar extends StatelessWidget {
           newAlbumViewModel.nowSelected == AlbumSelectedOption.backgroundColor
               ? const Text("배경 색", style: TextStyle(fontSize: 45))
               : const Text("배경 색", style: TextStyle(fontSize: 25)),
+          const Text("--- CD ---", style: TextStyle(fontSize: 40)),
           newAlbumViewModel.nowSelected == AlbumSelectedOption.cdImage
-              ? const Text("CD 이미지", style: TextStyle(fontSize: 45))
-              : const Text("CD 이미지", style: TextStyle(fontSize: 25)),
+              ? const Text("칵테일 사진", style: TextStyle(fontSize: 45))
+              : const Text("칵테일 사진", style: TextStyle(fontSize: 25)),
           newAlbumViewModel.nowSelected == AlbumSelectedOption.cdTitle
               ? const Text("칵테일 이름", style: TextStyle(fontSize: 45))
               : const Text("칵테일 이름", style: TextStyle(fontSize: 25)),

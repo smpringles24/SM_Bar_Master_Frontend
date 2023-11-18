@@ -41,11 +41,25 @@ Future<List<AlbumPreviewImageModel>> fetchAllAlbumPreviewImage() async {
   }
 }
 
+Future<AlbumModel> getAlbumById(int id) async {
+  final url = Uri.parse("http://localhost:3003/album/$id");
+
+  final response = await http.get(url);
+
+  if (response.statusCode == 200) {
+    AlbumModel albumModel = AlbumModel.fromJson(jsonDecode(response.body));
+    return albumModel;
+  } else {
+    throw Exception(
+        'Failed to load album. Status code: ${response.statusCode}');
+  }
+}
+
 Future<bool> deleteAlbum(int id) async {
   final url = Uri.parse("http://localhost:3003/album/$id");
 
   final response = await http.delete(url);
-  
+
   if (response.statusCode == 200) {
     return true;
   } else {
