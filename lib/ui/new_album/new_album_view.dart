@@ -46,10 +46,14 @@ class NewAlbumView extends StatelessWidget {
                   child: Stack(
                     children: [
                       Center(
-                        child: _AlbumEditPreview(
-                          newAlbumViewModel: newAlbumViewModel,
-                          newAlbumViewModelHandler: newAlbumViewModelHandler,
-                        ),
+                        child: newAlbumViewModel.nowSongIndex == -1
+                            ? _AlbumEditPreview(
+                                newAlbumViewModel: newAlbumViewModel)
+                            : _SongsEditPreview(
+                                newAlbumViewModel: newAlbumViewModel,
+                                newAlbumViewModelHandler:
+                                    newAlbumViewModelHandler,
+                              ),
                       ),
                       Center(
                         child: SizedBox(
@@ -63,7 +67,7 @@ class NewAlbumView extends StatelessWidget {
                                   height: 100,
                                 ),
                                 onPressed: () {
-                                  if (newAlbumViewModel.nowSongIndex > 0) {
+                                  if (newAlbumViewModel.nowSongIndex >= 0) {
                                     newAlbumViewModelHandler.setNowSongIndex(
                                         newAlbumViewModel.nowSongIndex - 1);
                                   }
@@ -177,11 +181,11 @@ class _IndicatorBar extends StatelessWidget {
   }
 }
 
-class _AlbumEditPreview extends StatelessWidget {
+class _SongsEditPreview extends StatelessWidget {
   final NewAlbumViewModel newAlbumViewModel;
   final NewAlbumViewModel newAlbumViewModelHandler;
 
-  const _AlbumEditPreview(
+  const _SongsEditPreview(
       {required this.newAlbumViewModel,
       required this.newAlbumViewModelHandler});
 
@@ -252,6 +256,10 @@ class _AlbumEditPreview extends StatelessWidget {
                 ),
                 Row(
                   children: [
+                    Text(
+                      '${newAlbumViewModel.nowSongIndex + 1} / ${newAlbumViewModel.albumModel.songEntities!.length}',
+                      style: const TextStyle(color: Colors.white, fontSize: 35),
+                    ),
                     IconButton(
                         onPressed: () {
                           newAlbumViewModelHandler.addSongEntity(SongEntity());
@@ -273,7 +281,7 @@ class _AlbumEditPreview extends StatelessWidget {
                           //TODO: Song삭제
                         },
                         icon: const Icon(
-                          Icons.delete_forever,
+                          Icons.remove,
                           size: 35,
                           color: Colors.white,
                         )),
@@ -328,7 +336,11 @@ class _AlbumEditPreview extends StatelessWidget {
                                 );
                               },
                               child: Image.asset(
-                                newAlbumViewModel.albumModel.imageUrl!,
+                                newAlbumViewModel
+                                    .albumModel
+                                    .songEntities![
+                                        newAlbumViewModel.nowSongIndex]
+                                    .imageUrl!,
                                 fit: BoxFit.cover,
                                 width: 550,
                                 height: 550,
@@ -479,6 +491,39 @@ class _AlbumEditPreview extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _AlbumEditPreview extends StatelessWidget {
+  late NewAlbumViewModel newAlbumViewModel;
+  _AlbumEditPreview({required this.newAlbumViewModel});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: MouseRegion(
+        onEnter: (_) => newAlbumViewModel
+            .changeSelectedOption(AlbumSelectedOption.albumImage),
+        child: InkWell(
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return DataChangeDialog(
+                    element: AlbumSelectedOption.albumImage,
+                    albumModel: newAlbumViewModel.albumModel,
+                    nowSongIndex: newAlbumViewModel.nowSongIndex);
+              },
+            );
+          },
+          child: Image.asset(
+            newAlbumViewModel.albumModel.imageUrl!,
+            height: 600,
+            width: 600,
+          ),
+        ),
       ),
     );
   }

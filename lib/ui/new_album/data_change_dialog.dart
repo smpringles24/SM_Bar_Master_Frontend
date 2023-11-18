@@ -58,13 +58,16 @@ class DataChangeDialog extends StatelessWidget {
                         albumModel.backgroundColor = _controller.text;
                         break;
                       case AlbumSelectedOption.cdImage:
-                        albumModel.songEntities![nowSongIndex].imageUrl = _controller.text;
+                        albumModel.songEntities![nowSongIndex].imageUrl =
+                            _controller.text;
                         break;
                       case AlbumSelectedOption.cdTitle:
-                        albumModel.songEntities![nowSongIndex].title = _controller.text;
+                        albumModel.songEntities![nowSongIndex].title =
+                            _controller.text;
                         break;
                       case AlbumSelectedOption.cdReview:
-                        albumModel.songEntities![nowSongIndex].content = _controller.text;
+                        albumModel.songEntities![nowSongIndex].content =
+                            _controller.text;
                         break;
                     }
                     Navigator.of(context).pop();
@@ -86,6 +89,8 @@ String elementToKorean(AlbumSelectedOption element) {
     return '날짜';
   } else if (element == AlbumSelectedOption.albumTitle) {
     return '앨범 제목';
+  } else if (element == AlbumSelectedOption.albumImage) {
+    return '앨범 이미지';
   } else if (element == AlbumSelectedOption.backgroundColor) {
     return '배경색';
   } else if (element == AlbumSelectedOption.cdImage) {
