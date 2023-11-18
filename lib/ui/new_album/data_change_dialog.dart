@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:scroll_date_picker/scroll_date_picker.dart';
 import 'package:sm_bar_master_frontend/data/model/album_model.dart';
 import 'package:sm_bar_master_frontend/data/model/etc_model.dart';
 
@@ -23,6 +24,8 @@ class DataChangeDialog extends StatelessWidget {
         switch (element) {
           case AlbumSelectedOption.backgroundColor:
             return ColorEditContainer(albumModel: albumModel);
+          case AlbumSelectedOption.albumDate:
+            return DateEditContainer(albumModel: albumModel);
           default:
             return SimpleEditContainer(
                 controller: _controller,
@@ -54,6 +57,63 @@ class ColorEditContainer extends StatelessWidget {
                   '0x${color.value.toRadixString(16).padLeft(8, '0')}';
               albumModel.backgroundColor = colorString;
             },
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('수정'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class DateEditContainer extends StatelessWidget {
+  final AlbumModel albumModel;
+  final DateTime _selectedDate = DateTime.now();
+
+  DateEditContainer({required this.albumModel, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 500,
+      width: 500,
+      color: Colors.black38,
+      child: Column(
+        children: [
+          Container(
+            height: 100.0,
+            alignment: Alignment.center,
+            child: Text(
+              "$_selectedDate",
+              style:
+                  const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),
+            ),
+          ),
+          SizedBox(
+            height: 250,
+            child: ScrollDatePicker(
+              selectedDate: _selectedDate,
+              locale: const Locale('ko'),
+              scrollViewOptions: const DatePickerScrollViewOptions(
+                  year: ScrollViewDetailOptions(
+                    label: '년',
+                    margin: EdgeInsets.only(right: 8),
+                  ),
+                  month: ScrollViewDetailOptions(
+                    label: '월',
+                    margin: EdgeInsets.only(right: 8),
+                  ),
+                  day: ScrollViewDetailOptions(
+                    label: '일',
+                  )),
+              onDateTimeChanged: (DateTime value) {
+                albumModel.date = value.toString().substring(0, 10);
+              },
+            ),
           ),
           ElevatedButton(
             onPressed: () {
