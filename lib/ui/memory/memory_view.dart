@@ -44,7 +44,7 @@ class MemoryView extends StatelessWidget {
                               if (isDeleted) {
                                 memoryViewModel.fetchdata();
                               } else {
-                                print('삭제 실패');
+                                //삭제 실패
                               }
                             } else {
                               //TODO: sncak bar로 알림

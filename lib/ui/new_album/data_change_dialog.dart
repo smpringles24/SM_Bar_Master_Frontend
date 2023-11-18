@@ -3,9 +3,9 @@ import 'package:sm_bar_master_frontend/data/model/album_model.dart';
 import 'package:sm_bar_master_frontend/data/model/etc_model.dart';
 
 class DataChangeDialog extends StatelessWidget {
-  AlbumModel albumModel;
   final TextEditingController _controller = TextEditingController();
-  late AlbumSelectedOption element;
+  final AlbumModel albumModel;
+  final AlbumSelectedOption element;
   final int nowSongIndex;
 
   DataChangeDialog(

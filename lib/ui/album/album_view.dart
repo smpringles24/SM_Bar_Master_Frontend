@@ -7,9 +7,9 @@ import 'package:sm_bar_master_frontend/data/model/album_model.dart';
 import 'package:sm_bar_master_frontend/ui/album/album_view_model.dart';
 
 class AlbumView extends StatelessWidget {
-  late int albumId;
+  final int albumId;
 
-  AlbumView({required this.albumId, super.key});
+  const AlbumView({required this.albumId, super.key});
 
   @override
   Widget build(BuildContext context) {

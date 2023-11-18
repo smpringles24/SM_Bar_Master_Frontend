@@ -17,126 +17,127 @@ class NewAlbumView extends StatelessWidget {
     NewAlbumViewModel newAlbumViewModelHandler =
         context.read<NewAlbumViewModel>();
 
-    return Scaffold(
-      backgroundColor: Colors.black87,
-      body: Row(
-        children: [
-          _IndicatorBar(newAlbumViewModel: newAlbumViewModel),
-          Expanded(
-            child: Column(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    width: double.infinity,
-                    color: const Color(0xFF81B71A),
-                    child: const Center(
-                      child: Text(
-                        "새로운 앨범 추가",
-                        style: TextStyle(
-                            color: Color.fromARGB(255, 0, 0, 0),
-                            fontSize: 45,
-                            fontWeight: FontWeight.w700),
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 6,
-                  child: Stack(
-                    children: [
-                      Center(
-                        child: newAlbumViewModel.nowSongIndex == -1
-                            ? _AlbumEditPreview(
-                                newAlbumViewModel: newAlbumViewModel)
-                            : _SongsEditPreview(
-                                newAlbumViewModel: newAlbumViewModel,
-                                newAlbumViewModelHandler:
-                                    newAlbumViewModelHandler,
-                              ),
-                      ),
-                      Center(
-                        child: SizedBox(
-                          width: 1220,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              IconButton(
-                                constraints: const BoxConstraints.tightFor(
-                                  width: 100,
-                                  height: 100,
-                                ),
-                                onPressed: () {
-                                  if (newAlbumViewModel.nowSongIndex >= 0) {
-                                    newAlbumViewModelHandler.setNowSongIndex(
-                                        newAlbumViewModel.nowSongIndex - 1);
-                                  }
-                                },
-                                icon: const Icon(
-                                  Icons.arrow_left,
-                                  color: Colors.greenAccent,
-                                  size: 70,
-                                ),
-                                splashColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                              ),
-                              IconButton(
-                                constraints: const BoxConstraints.tightFor(
-                                  width: 100,
-                                  height: 100,
-                                ),
-                                onPressed: () {
-                                  if (newAlbumViewModel.nowSongIndex <
-                                      newAlbumViewModel
-                                              .albumModel.songEntities!.length -
-                                          1) {
-                                    newAlbumViewModelHandler.setNowSongIndex(
-                                        newAlbumViewModel.nowSongIndex + 1);
-                                  }
-                                },
-                                icon: const Icon(
-                                  Icons.arrow_right,
-                                  color: Colors.greenAccent,
-                                  size: 70,
-                                ),
-                                splashColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                              ),
-                            ],
-                          ),
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pop(context, false);
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: Colors.black87,
+        body: Row(
+          children: [
+            _IndicatorBar(newAlbumViewModel: newAlbumViewModel),
+            Expanded(
+              child: Column(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      width: double.infinity,
+                      color: const Color(0xFF81B71A),
+                      child: const Center(
+                        child: Text(
+                          "새로운 앨범 추가",
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 0, 0, 0),
+                              fontSize: 45,
+                              fontWeight: FontWeight.w700),
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: TextButton(
-                      onPressed: () async {
-                        bool isCreated =
-                            await createAlbum(newAlbumViewModel.albumModel);
-                        if (isCreated) {
-                          Navigator.pop(context, true);
-                        } else {
-                          Navigator.pop(context, false);
-                        }
-                      },
-                      child: const Text(
-                        "추가하기!",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25,
-                            fontWeight: FontWeight.w700),
+                  Expanded(
+                    flex: 6,
+                    child: Stack(
+                      children: [
+                        Center(
+                          child: newAlbumViewModel.nowSongIndex == -1
+                              ? _AlbumEditPreview(
+                                  newAlbumViewModel: newAlbumViewModel)
+                              : _SongsEditPreview(
+                                  newAlbumViewModel: newAlbumViewModel,
+                                  newAlbumViewModelHandler:
+                                      newAlbumViewModelHandler,
+                                ),
+                        ),
+                        Center(
+                          child: SizedBox(
+                            width: 1220,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                IconButton(
+                                  constraints: const BoxConstraints.tightFor(
+                                    width: 100,
+                                    height: 100,
+                                  ),
+                                  onPressed: () {
+                                    if (newAlbumViewModel.nowSongIndex >= 0) {
+                                      newAlbumViewModelHandler.setNowSongIndex(
+                                          newAlbumViewModel.nowSongIndex - 1);
+                                    }
+                                  },
+                                  icon: const Icon(
+                                    Icons.arrow_left,
+                                    color: Colors.greenAccent,
+                                    size: 70,
+                                  ),
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                ),
+                                IconButton(
+                                  constraints: const BoxConstraints.tightFor(
+                                    width: 100,
+                                    height: 100,
+                                  ),
+                                  onPressed: () {
+                                    if (newAlbumViewModel.nowSongIndex <
+                                        newAlbumViewModel.albumModel
+                                                .songEntities!.length -
+                                            1) {
+                                      newAlbumViewModelHandler.setNowSongIndex(
+                                          newAlbumViewModel.nowSongIndex + 1);
+                                    }
+                                  },
+                                  icon: const Icon(
+                                    Icons.arrow_right,
+                                    color: Colors.greenAccent,
+                                    size: 70,
+                                  ),
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: TextButton(
+                        onPressed: () async {
+                          await createAlbum(newAlbumViewModel.albumModel)
+                              .then((_) => {Navigator.pop(context, true)});
+                        },
+                        child: const Text(
+                          "추가하기!",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 25,
+                              fontWeight: FontWeight.w700),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -497,8 +498,9 @@ class _SongsEditPreview extends StatelessWidget {
 }
 
 class _AlbumEditPreview extends StatelessWidget {
-  late NewAlbumViewModel newAlbumViewModel;
-  _AlbumEditPreview({required this.newAlbumViewModel});
+  final NewAlbumViewModel newAlbumViewModel;
+
+  const _AlbumEditPreview({required this.newAlbumViewModel});
 
   @override
   Widget build(BuildContext context) {
