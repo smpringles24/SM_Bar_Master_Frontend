@@ -9,7 +9,6 @@ class MyCustomScrollBehavior extends MaterialScrollBehavior {
         PointerDeviceKind.touch,
         PointerDeviceKind.mouse,
         PointerDeviceKind.stylus,
-        PointerDeviceKind.unknown
         // etc.
       };
 }
@@ -30,3 +29,8 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+
+
+// TODO - remote_datasource 에서 create함수 만들기
+// TODO - 사용 -> localhost:3003/album로 post요청 
