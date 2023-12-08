@@ -1,6 +1,8 @@
 import 'dart:math';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_arc_text/flutter_arc_text.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:sm_bar_master_frontend/data/datasource/remote_datasource.dart';
 import 'package:sm_bar_master_frontend/data/model/etc_model.dart';
 import 'package:sm_bar_master_frontend/ui/new_album/data_change_dialog.dart';
@@ -14,8 +16,6 @@ class NewAlbumView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     NewAlbumViewModel newAlbumViewModel = context.watch<NewAlbumViewModel>();
-    NewAlbumViewModel newAlbumViewModelHandler =
-        context.read<NewAlbumViewModel>();
 
     return WillPopScope(
       //뒤로가기 프리징 방지
@@ -57,16 +57,12 @@ class NewAlbumView extends StatelessWidget {
                                   newAlbumViewModel: newAlbumViewModel)
                               : _SongsEditPreview(
                                   newAlbumViewModel: newAlbumViewModel,
-                                  newAlbumViewModelHandler:
-                                      newAlbumViewModelHandler,
                                 ),
                         ),
                         Center(
-                          child: _PageController(
-                              newAlbumViewModel: newAlbumViewModel,
-                              newAlbumViewModelHandler:
-                                  newAlbumViewModelHandler),
-                        ),
+                            child: _PageController(
+                          newAlbumViewModel: newAlbumViewModel,
+                        )),
                       ],
                     ),
                   ),
@@ -102,11 +98,9 @@ class NewAlbumView extends StatelessWidget {
 class _PageController extends StatelessWidget {
   const _PageController({
     required this.newAlbumViewModel,
-    required this.newAlbumViewModelHandler,
   });
 
   final NewAlbumViewModel newAlbumViewModel;
-  final NewAlbumViewModel newAlbumViewModelHandler;
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +116,7 @@ class _PageController extends StatelessWidget {
             ),
             onPressed: () {
               if (newAlbumViewModel.nowSongIndex >= 0) {
-                newAlbumViewModelHandler
+                newAlbumViewModel
                     .setNowSongIndex(newAlbumViewModel.nowSongIndex - 1);
               }
             },
@@ -142,7 +136,7 @@ class _PageController extends StatelessWidget {
             onPressed: () {
               if (newAlbumViewModel.nowSongIndex <
                   newAlbumViewModel.albumModel.songEntities!.length - 1) {
-                newAlbumViewModelHandler
+                newAlbumViewModel
                     .setNowSongIndex(newAlbumViewModel.nowSongIndex + 1);
               }
             },
@@ -201,11 +195,8 @@ class _SelectionIndicatorBar extends StatelessWidget {
 
 class _SongsEditPreview extends StatelessWidget {
   final NewAlbumViewModel newAlbumViewModel;
-  final NewAlbumViewModel newAlbumViewModelHandler;
 
-  const _SongsEditPreview(
-      {required this.newAlbumViewModel,
-      required this.newAlbumViewModelHandler});
+  const _SongsEditPreview({required this.newAlbumViewModel});
 
   @override
   Widget build(BuildContext context) {
@@ -234,8 +225,8 @@ class _SongsEditPreview extends StatelessWidget {
                             context: context,
                             builder: (BuildContext context) {
                               return DataChangeDialog(
+                                  newAlbumViewModel: newAlbumViewModel,
                                   element: AlbumSelectedOption.albumDate,
-                                  albumModel: newAlbumViewModel.albumModel,
                                   nowSongIndex: newAlbumViewModel.nowSongIndex);
                             },
                           );
@@ -260,8 +251,8 @@ class _SongsEditPreview extends StatelessWidget {
                             context: context,
                             builder: (BuildContext context) {
                               return DataChangeDialog(
+                                  newAlbumViewModel: newAlbumViewModel,
                                   element: AlbumSelectedOption.albumTitle,
-                                  albumModel: newAlbumViewModel.albumModel,
                                   nowSongIndex: newAlbumViewModel.nowSongIndex);
                             },
                           );
@@ -283,12 +274,12 @@ class _SongsEditPreview extends StatelessWidget {
                     ),
                     IconButton(
                         onPressed: () {
-                          newAlbumViewModelHandler.addSongEntity(SongEntity());
+                          newAlbumViewModel.addSongEntity(SongEntity());
                           if (newAlbumViewModel.nowSongIndex <
                               newAlbumViewModel
                                       .albumModel.songEntities!.length -
                                   1) {
-                            newAlbumViewModelHandler.setNowSongIndex(
+                            newAlbumViewModel.setNowSongIndex(
                                 newAlbumViewModel.nowSongIndex + 1);
                           }
                         },
@@ -306,10 +297,10 @@ class _SongsEditPreview extends StatelessWidget {
                               newAlbumViewModel
                                       .albumModel.songEntities!.length -
                                   1) {
-                            newAlbumViewModelHandler.setNowSongIndex(
+                            newAlbumViewModel.setNowSongIndex(
                                 newAlbumViewModel.nowSongIndex - 1);
                           }
-                          newAlbumViewModelHandler
+                          newAlbumViewModel
                               .removeSongEntity(newAlbumViewModel.nowSongIndex);
                         },
                         icon: const Icon(
@@ -334,8 +325,8 @@ class _SongsEditPreview extends StatelessWidget {
                       context: context,
                       builder: (BuildContext context) {
                         return DataChangeDialog(
+                            newAlbumViewModel: newAlbumViewModel,
                             element: AlbumSelectedOption.backgroundColor,
-                            albumModel: newAlbumViewModel.albumModel,
                             nowSongIndex: newAlbumViewModel.nowSongIndex);
                       },
                     );
@@ -359,9 +350,8 @@ class _SongsEditPreview extends StatelessWidget {
                                   context: context,
                                   builder: (BuildContext context) {
                                     return DataChangeDialog(
+                                        newAlbumViewModel: newAlbumViewModel,
                                         element: AlbumSelectedOption.cdImage,
-                                        albumModel:
-                                            newAlbumViewModel.albumModel,
                                         nowSongIndex:
                                             newAlbumViewModel.nowSongIndex);
                                   },
@@ -413,8 +403,8 @@ class _SongsEditPreview extends StatelessWidget {
                       context: context,
                       builder: (BuildContext context) {
                         return DataChangeDialog(
+                            newAlbumViewModel: newAlbumViewModel,
                             element: AlbumSelectedOption.backgroundColor,
-                            albumModel: newAlbumViewModel.albumModel,
                             nowSongIndex: newAlbumViewModel.nowSongIndex);
                       },
                     );
@@ -435,8 +425,8 @@ class _SongsEditPreview extends StatelessWidget {
                       context: context,
                       builder: (BuildContext context) {
                         return DataChangeDialog(
+                            newAlbumViewModel: newAlbumViewModel,
                             element: AlbumSelectedOption.backgroundColor,
-                            albumModel: newAlbumViewModel.albumModel,
                             nowSongIndex: newAlbumViewModel.nowSongIndex);
                       },
                     );
@@ -463,9 +453,8 @@ class _SongsEditPreview extends StatelessWidget {
                                     context: context,
                                     builder: (BuildContext context) {
                                       return DataChangeDialog(
+                                          newAlbumViewModel: newAlbumViewModel,
                                           element: AlbumSelectedOption.cdTitle,
-                                          albumModel:
-                                              newAlbumViewModel.albumModel,
                                           nowSongIndex:
                                               newAlbumViewModel.nowSongIndex);
                                     },
@@ -495,9 +484,8 @@ class _SongsEditPreview extends StatelessWidget {
                                   context: context,
                                   builder: (BuildContext context) {
                                     return DataChangeDialog(
+                                        newAlbumViewModel: newAlbumViewModel,
                                         element: AlbumSelectedOption.cdReview,
-                                        albumModel:
-                                            newAlbumViewModel.albumModel,
                                         nowSongIndex:
                                             newAlbumViewModel.nowSongIndex);
                                   },
@@ -528,6 +516,12 @@ class _SongsEditPreview extends StatelessWidget {
   }
 }
 
+Future<Image?> xfileToImageWidget(XFile? image) async {
+  if (image == null) return null;
+  Uint8List imageData = await image.readAsBytes();
+  return Image.memory(imageData);
+}
+
 class _AlbumEditPreview extends StatelessWidget {
   final NewAlbumViewModel newAlbumViewModel;
 
@@ -545,16 +539,30 @@ class _AlbumEditPreview extends StatelessWidget {
               context: context,
               builder: (BuildContext context) {
                 return DataChangeDialog(
+                    newAlbumViewModel: newAlbumViewModel,
                     element: AlbumSelectedOption.albumImage,
-                    albumModel: newAlbumViewModel.albumModel,
                     nowSongIndex: newAlbumViewModel.nowSongIndex);
               },
             );
           },
-          child: Image.asset(
-            newAlbumViewModel.albumModel.imageUrl!,
-            height: 600,
-            width: 600,
+          child: FutureBuilder<Image?>(
+            future: xfileToImageWidget(
+                newAlbumViewModel.newAlbumTitlePreviewImage),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return SizedBox(
+                  width: 600,
+                  height: 600,
+                  child: snapshot.data,
+                );
+              } else {
+                return Container(
+                  width: 600,
+                  height: 600,
+                  color: Colors.white,
+                );
+              }
+            },
           ),
         ),
       ),

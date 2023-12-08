@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:sm_bar_master_frontend/data/model/album_model.dart';
 import 'package:sm_bar_master_frontend/data/model/etc_model.dart';
 import 'package:sm_bar_master_frontend/data/model/song_entity.dart';
@@ -26,6 +27,16 @@ class NewAlbumViewModel with ChangeNotifier {
 
   AlbumModel _albumModel = AlbumModel();
   AlbumModel get albumModel => _albumModel;
+
+  //############
+
+  XFile? _newAlbumTitlePreviewImage;
+  XFile? get newAlbumTitlePreviewImage => _newAlbumTitlePreviewImage;
+
+  setNewAlbumTitlePreviewImage(XFile image) {
+    _newAlbumTitlePreviewImage = image;
+    notifyListeners();
+  }
 
   void changeAlbumData() {
     _albumModel = AlbumModel();
