@@ -79,8 +79,9 @@ class MemoryView extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        AlbumPage(albumId: snapshot.data![index].albumId!),
+                                    builder: (context) => AlbumPage(
+                                        albumId:
+                                            snapshot.data![index].albumId!),
                                   ),
                                 );
                               },
@@ -100,7 +101,6 @@ class MemoryView extends StatelessWidget {
                                     builder: (context) => const NewAlbumPage(),
                                   ),
                                 );
-
                                 if (result) {
                                   await memoryViewModel.fetchdata();
                                 }

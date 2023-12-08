@@ -1,8 +1,17 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:scroll_date_picker/scroll_date_picker.dart';
+import 'package:image_picker/image_picker.dart';
+
 import 'package:sm_bar_master_frontend/data/model/album_model.dart';
 import 'package:sm_bar_master_frontend/data/model/etc_model.dart';
+
+Future<Uint8List?> xfileToUint8List(XFile? image) async {
+  if (image == null) return null;
+  return await image.readAsBytes();
+}
 
 class DataChangeDialog extends StatelessWidget {
   final TextEditingController _controller = TextEditingController();
@@ -26,6 +35,8 @@ class DataChangeDialog extends StatelessWidget {
             return ColorEditContainer(albumModel: albumModel);
           case AlbumSelectedOption.albumDate:
             return DateEditContainer(albumModel: albumModel);
+          case AlbumSelectedOption.albumImage:
+            return ImageEditContainer(albumModel: albumModel);
           default:
             return SimpleEditContainer(
                 controller: _controller,
@@ -114,6 +125,71 @@ class DateEditContainer extends StatelessWidget {
                 albumModel.date = value.toString().substring(0, 10);
               },
             ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('수정'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ImageEditContainer extends StatefulWidget {
+  final AlbumModel albumModel;
+
+  const ImageEditContainer({required this.albumModel, super.key});
+
+  @override
+  State<ImageEditContainer> createState() => _ImageEditContainerState();
+}
+
+class _ImageEditContainerState extends State<ImageEditContainer> {
+  XFile? _selectedImage;
+
+  Future<XFile?> pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      setState(() {
+        _selectedImage = image;
+      });
+      return image;
+    } else {
+      return null;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        children: [
+          SizedBox(
+            height: 500,
+            width: 500,
+            child: FutureBuilder(
+              future: xfileToUint8List(_selectedImage),
+              builder:
+                  (BuildContext context, AsyncSnapshot<Uint8List?> snapshot) {
+                if (snapshot.connectionState == ConnectionState.done &&
+                    snapshot.data != null) {
+                  return Image.memory(snapshot.data!);
+                } else if (snapshot.error != null) {
+                  return const Text('Error loading image');
+                } else {
+                  return const Text('No image selected.');
+                }
+              },
+            ),
+          ),
+          ElevatedButton(
+            onPressed: pickImage,
+            child: const Text('Select Image'),
           ),
           ElevatedButton(
             onPressed: () {

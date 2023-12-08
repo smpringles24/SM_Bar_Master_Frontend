@@ -6,6 +6,12 @@ import 'package:sm_bar_master_frontend/data/model/album_preview_image_model.dart
 Future<bool> createAlbum(AlbumModel albumModel) async {
   final url = Uri.parse("http://localhost:3003/album");
 
+  // S3에 이미지 업로드
+
+  // 앨범 정보에 이미지 url 저장
+
+  // DB에 앨범 데이터 저장
+  
   final response = await http.post(
     url,
     headers: <String, String>{
@@ -14,12 +20,11 @@ Future<bool> createAlbum(AlbumModel albumModel) async {
     body: jsonEncode(albumModel.toJson()),
   );
 
+  // 결과 반환
   if (response.statusCode == 201) {
     return true;
   } else {
     return false;
-    // throw Exception(
-    //     'Failed to create album. Status code: ${response.statusCode}');
   }
 }
 
