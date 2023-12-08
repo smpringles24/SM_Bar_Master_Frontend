@@ -4,25 +4,46 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:scroll_date_picker/scroll_date_picker.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:sm_bar_master_frontend/data/datasource/remote_datasource.dart';
 
-import 'package:sm_bar_master_frontend/data/model/album_model.dart';
 import 'package:sm_bar_master_frontend/data/model/etc_model.dart';
+import 'package:sm_bar_master_frontend/ui/new_album/new_album_view_model.dart';
 
 Future<Uint8List?> xfileToUint8List(XFile? image) async {
   if (image == null) return null;
+  print('ololol');
   return await image.readAsBytes();
+}
+
+/// 영어로 된 열거형을 한글로 매핑하는 함수
+String elementToKorean(AlbumSelectedOption element) {
+  if (element == AlbumSelectedOption.albumDate) {
+    return '날짜';
+  } else if (element == AlbumSelectedOption.albumTitle) {
+    return '앨범 제목';
+  } else if (element == AlbumSelectedOption.albumImage) {
+    return '앨범 이미지';
+  } else if (element == AlbumSelectedOption.backgroundColor) {
+    return '배경색';
+  } else if (element == AlbumSelectedOption.cdImage) {
+    return 'CD 이미지';
+  } else if (element == AlbumSelectedOption.cdTitle) {
+    return '칵테일 이름';
+  } else if (element == AlbumSelectedOption.cdReview) {
+    return '리뷰';
+  } else {
+    return '오류';
+  }
 }
 
 class DataChangeDialog extends StatelessWidget {
   final TextEditingController _controller = TextEditingController();
-  final AlbumModel albumModel;
   final AlbumSelectedOption element;
   final int nowSongIndex;
+  final NewAlbumViewModel newAlbumViewModel;
 
   DataChangeDialog(
-      {required this.element,
-      required this.albumModel,
+      {required this.newAlbumViewModel,
+      required this.element,
       required this.nowSongIndex,
       super.key});
 
@@ -30,31 +51,33 @@ class DataChangeDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('값 수정하기'),
-      content: Builder(builder: (context) {
-        switch (element) {
-          case AlbumSelectedOption.backgroundColor:
-            return ColorEditContainer(albumModel: albumModel);
-          case AlbumSelectedOption.albumDate:
-            return DateEditContainer(albumModel: albumModel);
-          case AlbumSelectedOption.albumImage:
-            return ImageEditContainer(albumModel: albumModel);
-          default:
-            return SimpleEditContainer(
-                controller: _controller,
-                element: element,
-                albumModel: albumModel,
-                nowSongIndex: nowSongIndex);
-        }
-      }),
+      content: Builder(
+        builder: (context) {
+          switch (element) {
+            case AlbumSelectedOption.backgroundColor:
+              return ColorEditContainer(newAlbumViewModel: newAlbumViewModel);
+            case AlbumSelectedOption.albumDate:
+              return DateEditContainer(newAlbumViewModel: newAlbumViewModel);
+            case AlbumSelectedOption.albumImage:
+              return ImageEditContainer(newAlbumViewModel: newAlbumViewModel);
+            default:
+              return SimpleEditContainer(
+                  controller: _controller,
+                  element: element,
+                  newAlbumViewModel: newAlbumViewModel,
+                  nowSongIndex: nowSongIndex);
+          }
+        },
+      ),
     );
   }
 }
 
 class ColorEditContainer extends StatelessWidget {
-  final AlbumModel albumModel;
+  final NewAlbumViewModel newAlbumViewModel;
   final Color currentColor = const Color(0xff123456);
 
-  const ColorEditContainer({required this.albumModel, super.key});
+  const ColorEditContainer({required this.newAlbumViewModel, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +90,7 @@ class ColorEditContainer extends StatelessWidget {
             onColorChanged: (Color color) {
               String colorString =
                   '0x${color.value.toRadixString(16).padLeft(8, '0')}';
-              albumModel.backgroundColor = colorString;
+              newAlbumViewModel.albumModel.backgroundColor = colorString;
             },
           ),
           ElevatedButton(
@@ -83,10 +106,10 @@ class ColorEditContainer extends StatelessWidget {
 }
 
 class DateEditContainer extends StatelessWidget {
-  final AlbumModel albumModel;
+  final NewAlbumViewModel newAlbumViewModel;
   final DateTime _selectedDate = DateTime.now();
 
-  DateEditContainer({required this.albumModel, super.key});
+  DateEditContainer({required this.newAlbumViewModel, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +146,8 @@ class DateEditContainer extends StatelessWidget {
                     label: '일',
                   )),
               onDateTimeChanged: (DateTime value) {
-                albumModel.date = value.toString().substring(0, 10);
+                newAlbumViewModel.albumModel.date =
+                    value.toString().substring(0, 10);
               },
             ),
           ),
@@ -140,30 +164,27 @@ class DateEditContainer extends StatelessWidget {
 }
 
 class ImageEditContainer extends StatefulWidget {
-  final AlbumModel albumModel;
+  final NewAlbumViewModel newAlbumViewModel;
 
-  const ImageEditContainer({required this.albumModel, super.key});
+  const ImageEditContainer({required this.newAlbumViewModel, super.key});
 
   @override
   State<ImageEditContainer> createState() => _ImageEditContainerState();
 }
 
 class _ImageEditContainerState extends State<ImageEditContainer> {
-  XFile? _selectedImage;
   Future<XFile?> pickImage() async {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
     if (image != null) {
       setState(() {
-        _selectedImage = image;
+        widget.newAlbumViewModel.setNewAlbumTitlePreviewImage(image);
       });
-      await uploadImageToS3(_selectedImage);
-      print('데이터 업로드!');
-      return image;
     } else {
       return null;
     }
+    return null;
   }
 
   @override
@@ -175,7 +196,8 @@ class _ImageEditContainerState extends State<ImageEditContainer> {
             height: 500,
             width: 500,
             child: FutureBuilder(
-              future: xfileToUint8List(_selectedImage),
+              future: xfileToUint8List(
+                  widget.newAlbumViewModel.newAlbumTitlePreviewImage),
               builder:
                   (BuildContext context, AsyncSnapshot<Uint8List?> snapshot) {
                 if (snapshot.connectionState == ConnectionState.done &&
@@ -206,18 +228,18 @@ class _ImageEditContainerState extends State<ImageEditContainer> {
 }
 
 class SimpleEditContainer extends StatelessWidget {
+  final TextEditingController _controller;
+  final AlbumSelectedOption element;
+  final NewAlbumViewModel newAlbumViewModel;
+  final int nowSongIndex;
+
   const SimpleEditContainer({
     super.key,
     required TextEditingController controller,
     required this.element,
-    required this.albumModel,
+    required this.newAlbumViewModel,
     required this.nowSongIndex,
   }) : _controller = controller;
-
-  final TextEditingController _controller;
-  final AlbumSelectedOption element;
-  final AlbumModel albumModel;
-  final int nowSongIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -249,28 +271,29 @@ class SimpleEditContainer extends StatelessWidget {
                 onPressed: () {
                   switch (element) {
                     case AlbumSelectedOption.albumDate:
-                      albumModel.date = _controller.text;
+                      newAlbumViewModel.albumModel.date = _controller.text;
                       break;
                     case AlbumSelectedOption.albumTitle:
-                      albumModel.title = _controller.text;
+                      newAlbumViewModel.albumModel.title = _controller.text;
                       break;
                     case AlbumSelectedOption.albumImage:
-                      albumModel.imageUrl = _controller.text;
+                      newAlbumViewModel.albumModel.imageUrl = _controller.text;
                       break;
                     case AlbumSelectedOption.backgroundColor:
-                      albumModel.backgroundColor = _controller.text;
+                      newAlbumViewModel.albumModel.backgroundColor =
+                          _controller.text;
                       break;
                     case AlbumSelectedOption.cdImage:
-                      albumModel.songEntities![nowSongIndex].imageUrl =
-                          _controller.text;
+                      newAlbumViewModel.albumModel.songEntities![nowSongIndex]
+                          .imageUrl = _controller.text;
                       break;
                     case AlbumSelectedOption.cdTitle:
-                      albumModel.songEntities![nowSongIndex].title =
-                          _controller.text;
+                      newAlbumViewModel.albumModel.songEntities![nowSongIndex]
+                          .title = _controller.text;
                       break;
                     case AlbumSelectedOption.cdReview:
-                      albumModel.songEntities![nowSongIndex].content =
-                          _controller.text;
+                      newAlbumViewModel.albumModel.songEntities![nowSongIndex]
+                          .content = _controller.text;
                       break;
                   }
                   Navigator.of(context).pop();
@@ -282,26 +305,5 @@ class SimpleEditContainer extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-/// 영어로 된 열거형을 한글로 바꿔주는 함수
-String elementToKorean(AlbumSelectedOption element) {
-  if (element == AlbumSelectedOption.albumDate) {
-    return '날짜';
-  } else if (element == AlbumSelectedOption.albumTitle) {
-    return '앨범 제목';
-  } else if (element == AlbumSelectedOption.albumImage) {
-    return '앨범 이미지';
-  } else if (element == AlbumSelectedOption.backgroundColor) {
-    return '배경색';
-  } else if (element == AlbumSelectedOption.cdImage) {
-    return 'CD 이미지';
-  } else if (element == AlbumSelectedOption.cdTitle) {
-    return '칵테일 이름';
-  } else if (element == AlbumSelectedOption.cdReview) {
-    return '리뷰';
-  } else {
-    return '오류';
   }
 }
