@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:scroll_date_picker/scroll_date_picker.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sm_bar_master_frontend/data/datasource/remote_datasource.dart';
 
 import 'package:sm_bar_master_frontend/data/model/album_model.dart';
 import 'package:sm_bar_master_frontend/data/model/etc_model.dart';
@@ -149,7 +150,6 @@ class ImageEditContainer extends StatefulWidget {
 
 class _ImageEditContainerState extends State<ImageEditContainer> {
   XFile? _selectedImage;
-
   Future<XFile?> pickImage() async {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
@@ -158,6 +158,8 @@ class _ImageEditContainerState extends State<ImageEditContainer> {
       setState(() {
         _selectedImage = image;
       });
+      await uploadImageToS3(_selectedImage);
+      print('데이터 업로드!');
       return image;
     } else {
       return null;

@@ -1,7 +1,35 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:sm_bar_master_frontend/data/model/album_model.dart';
 import 'package:sm_bar_master_frontend/data/model/album_preview_image_model.dart';
+
+Future<void> uploadImageToS3(XFile? imageFile) async {
+  if (imageFile == null) return;
+
+  final Uri url = Uri.parse("http://localhost:3003/album/img");
+
+  http.MultipartRequest request = http.MultipartRequest('POST', url);
+
+  Uint8List imageData = await imageFile.readAsBytes();
+  request.files.add(http.MultipartFile.fromBytes(
+    'file',
+    imageData,
+    filename: imageFile.name,
+  ));
+
+  try {
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 201) {
+      print('Uploaded!');
+    } else {
+      print('Failed. Status code: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error: $e');
+  }
+}
 
 Future<bool> createAlbum(AlbumModel albumModel) async {
   final url = Uri.parse("http://localhost:3003/album");
@@ -11,7 +39,7 @@ Future<bool> createAlbum(AlbumModel albumModel) async {
   // 앨범 정보에 이미지 url 저장
 
   // DB에 앨범 데이터 저장
-  
+
   final response = await http.post(
     url,
     headers: <String, String>{
