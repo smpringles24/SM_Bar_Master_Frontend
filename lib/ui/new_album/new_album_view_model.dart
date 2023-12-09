@@ -16,6 +16,7 @@ class NewAlbumViewModel with ChangeNotifier {
   //############
 
   int _nowSongIndex = 0;
+    ///nowSongIndex   -1: 앨범 타이틀페이지, 0~: 노래 페이지
   int get nowSongIndex => _nowSongIndex;
 
   setNowSongIndex(int index) {

@@ -8,29 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:sm_bar_master_frontend/data/model/etc_model.dart';
 import 'package:sm_bar_master_frontend/ui/new_album/new_album_view_model.dart';
 import 'package:sm_bar_master_frontend/utils/data_convert.dart';
-
-
-
-/// 영어로 된 열거형을 한글로 매핑하는 함수
-String elementToKorean(AlbumSelectedOption element) {
-  if (element == AlbumSelectedOption.albumDate) {
-    return '날짜';
-  } else if (element == AlbumSelectedOption.albumTitle) {
-    return '앨범 제목';
-  } else if (element == AlbumSelectedOption.albumImage) {
-    return '앨범 이미지';
-  } else if (element == AlbumSelectedOption.backgroundColor) {
-    return '배경색';
-  } else if (element == AlbumSelectedOption.cdImage) {
-    return 'CD 이미지';
-  } else if (element == AlbumSelectedOption.cdTitle) {
-    return '칵테일 이름';
-  } else if (element == AlbumSelectedOption.cdReview) {
-    return '리뷰';
-  } else {
-    return '오류';
-  }
-}
+import 'package:sm_bar_master_frontend/utils/etc.dart';
 
 class DataChangeDialog extends StatelessWidget {
   final TextEditingController _textController = TextEditingController();
