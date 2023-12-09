@@ -38,6 +38,14 @@ class NewAlbumViewModel with ChangeNotifier {
     _newAlbumTitlePreviewImage = image;
     notifyListeners();
   }
+  
+  final List<XFile?> _newAlbumPreviewImages = [];
+  List<XFile?> get newAlbumPreviewImages => _newAlbumPreviewImages;
+
+  setNewAlbumPreviewImages(XFile? image, int index) {
+    _newAlbumPreviewImages[index] = image;
+    notifyListeners();
+  }
 
   void changeAlbumData() {
     _albumModel = AlbumModel();

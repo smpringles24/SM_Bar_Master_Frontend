@@ -4,9 +4,10 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:sm_bar_master_frontend/data/model/album_model.dart';
 import 'package:sm_bar_master_frontend/data/model/album_preview_image_model.dart';
+import 'package:sm_bar_master_frontend/ui/new_album/new_album_view_model.dart';
 
-Future<void> uploadImageToS3(XFile? imageFile) async {
-  if (imageFile == null) return;
+Future<String> uploadImageToS3(XFile? imageFile) async {
+  if (imageFile == null) return 'image file is null';
 
   final Uri url = Uri.parse("http://localhost:3003/album/img");
 
@@ -22,30 +23,36 @@ Future<void> uploadImageToS3(XFile? imageFile) async {
   try {
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 201) {
-      print('Uploaded!');
+      return await response.stream.bytesToString();
     } else {
-      print('Failed. Status code: ${response.statusCode}');
+      return 'Failed. Status code: ${response.statusCode}';
     }
   } catch (e) {
-    print('Error: $e');
+    return 'Error: $e';
   }
 }
 
-Future<bool> createAlbum(AlbumModel albumModel) async {
+Future<bool> createAlbum(NewAlbumViewModel newAlbumViewModel) async {
   final url = Uri.parse("http://localhost:3003/album");
 
-  // S3에 이미지 업로드
+  //newAlbumViewModel.newAlbumTitlePreviewImage를 S3에 업로드
+  try {
+    final String response =
+        await uploadImageToS3(newAlbumViewModel.newAlbumTitlePreviewImage);
 
-  // 앨범 정보에 이미지 url 저장
+    // newAlbumViewModel.albumModel에 이미지 url 저장
+    newAlbumViewModel.albumModel.imageUrl = response;
+  } catch (e) {
+    print('Error: $e');
+  }
 
   // DB에 앨범 데이터 저장
-
   final response = await http.post(
     url,
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
-    body: jsonEncode(albumModel.toJson()),
+    body: jsonEncode(newAlbumViewModel.albumModel.toJson()),
   );
 
   // 결과 반환

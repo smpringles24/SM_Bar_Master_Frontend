@@ -28,10 +28,10 @@ class AlbumEditPreview extends StatelessWidget {
                 child: Image.memory(snapshot.data!),
               );
             } else {
-              return Container(
+              return SizedBox(
                 width: 600,
                 height: 600,
-                color: Colors.white,
+                child: Image.asset('lib/assets/image_placeholder_no_image.png'),
               );
             }
           },

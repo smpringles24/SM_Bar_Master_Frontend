@@ -71,7 +71,7 @@ class NewAlbumView extends StatelessWidget {
                       width: double.infinity,
                       child: TextButton(
                         onPressed: () async {
-                          await createAlbum(newAlbumViewModel.albumModel)
+                          await createAlbum(newAlbumViewModel)
                               .then((_) => {Navigator.pop(context, true)});
                         },
                         child: const Text(

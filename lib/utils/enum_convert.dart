@@ -1,4 +1,4 @@
-import 'package:sm_bar_master_frontend/data/model/etc_model.dart';
+import 'package:sm_bar_master_frontend/utils/types.dart';
 
 /// 영어로 된 열거형을 한글로 매핑하는 함수
 String elementToKorean(AlbumSelectedOption element) {

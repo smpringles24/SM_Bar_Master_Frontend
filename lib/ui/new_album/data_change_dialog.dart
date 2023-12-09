@@ -5,10 +5,10 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:scroll_date_picker/scroll_date_picker.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'package:sm_bar_master_frontend/data/model/etc_model.dart';
+import 'package:sm_bar_master_frontend/utils/types.dart';
 import 'package:sm_bar_master_frontend/ui/new_album/new_album_view_model.dart';
-import 'package:sm_bar_master_frontend/utils/data_convert.dart';
-import 'package:sm_bar_master_frontend/utils/etc.dart';
+import 'package:sm_bar_master_frontend/utils/image_data_convert.dart';
+import 'package:sm_bar_master_frontend/utils/enum_convert.dart';
 
 class DataChangeDialog extends StatelessWidget {
   final TextEditingController _textController = TextEditingController();
@@ -30,7 +30,9 @@ class DataChangeDialog extends StatelessWidget {
             case AlbumSelectedOption.albumDate:
               return DateEditContainer(newAlbumViewModel: newAlbumViewModel);
             case AlbumSelectedOption.albumImage:
-              return ImageEditContainer(newAlbumViewModel: newAlbumViewModel);
+              return ImageEditContainer(
+                  newAlbumViewModel: newAlbumViewModel,
+                  imageIndex: newAlbumViewModel.nowSongIndex);
             default:
               return SimpleEditContainer(
                   controller: _textController,
@@ -137,21 +139,25 @@ class DateEditContainer extends StatelessWidget {
 
 class ImageEditContainer extends StatefulWidget {
   final NewAlbumViewModel newAlbumViewModel;
+  final int imageIndex;
 
-  const ImageEditContainer({required this.newAlbumViewModel, super.key});
+  const ImageEditContainer(
+      {required this.newAlbumViewModel, required this.imageIndex, super.key});
 
   @override
   State<ImageEditContainer> createState() => _ImageEditContainerState();
 }
 
 class _ImageEditContainerState extends State<ImageEditContainer> {
+  XFile? _previewImage;
+
   Future<XFile?> pickImage() async {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
     if (image != null) {
       setState(() {
-        widget.newAlbumViewModel.setNewAlbumTitlePreviewImage(image);
+        _previewImage = image;
       });
     } else {
       return null;
@@ -168,8 +174,7 @@ class _ImageEditContainerState extends State<ImageEditContainer> {
             height: 500,
             width: 500,
             child: FutureBuilder(
-              future: xfileToUint8List(
-                  widget.newAlbumViewModel.newAlbumTitlePreviewImage),
+              future: xfileToUint8List(_previewImage),
               builder:
                   (BuildContext context, AsyncSnapshot<Uint8List?> snapshot) {
                 if (snapshot.connectionState == ConnectionState.done &&
@@ -189,6 +194,13 @@ class _ImageEditContainerState extends State<ImageEditContainer> {
           ),
           ElevatedButton(
             onPressed: () {
+              if (widget.imageIndex == -1) {
+                widget.newAlbumViewModel
+                    .setNewAlbumTitlePreviewImage(_previewImage!);
+              } else {
+                //song의 이미지 변경
+              }
+
               Navigator.of(context).pop();
             },
             child: const Text('수정'),

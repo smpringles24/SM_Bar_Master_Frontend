@@ -9,7 +9,7 @@ class AlbumModel {
   List<SongEntity>? songEntities;
 
   AlbumModel({
-    this.imageUrl = 'lib/assets/placeholder.png',
+    this.imageUrl = 'lib/assets/image_placeholder_no_image.png',
     this.title = 'No Title',
     this.date = '2099.99.99',
     this.backgroundColor = '0xFF475C66',
