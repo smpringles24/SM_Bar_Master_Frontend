@@ -7,12 +7,9 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:sm_bar_master_frontend/data/model/etc_model.dart';
 import 'package:sm_bar_master_frontend/ui/new_album/new_album_view_model.dart';
+import 'package:sm_bar_master_frontend/utils/data_convert.dart';
 
-Future<Uint8List?> xfileToUint8List(XFile? image) async {
-  if (image == null) return null;
-  print('ololol');
-  return await image.readAsBytes();
-}
+
 
 /// 영어로 된 열거형을 한글로 매핑하는 함수
 String elementToKorean(AlbumSelectedOption element) {
@@ -36,16 +33,12 @@ String elementToKorean(AlbumSelectedOption element) {
 }
 
 class DataChangeDialog extends StatelessWidget {
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _textController = TextEditingController();
   final AlbumSelectedOption element;
-  final int nowSongIndex;
   final NewAlbumViewModel newAlbumViewModel;
 
   DataChangeDialog(
-      {required this.newAlbumViewModel,
-      required this.element,
-      required this.nowSongIndex,
-      super.key});
+      {required this.newAlbumViewModel, required this.element, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -62,10 +55,10 @@ class DataChangeDialog extends StatelessWidget {
               return ImageEditContainer(newAlbumViewModel: newAlbumViewModel);
             default:
               return SimpleEditContainer(
-                  controller: _controller,
+                  controller: _textController,
                   element: element,
                   newAlbumViewModel: newAlbumViewModel,
-                  nowSongIndex: nowSongIndex);
+                  nowSongIndex: newAlbumViewModel.nowSongIndex);
           }
         },
       ),
@@ -134,17 +127,18 @@ class DateEditContainer extends StatelessWidget {
               selectedDate: _selectedDate,
               locale: const Locale('ko'),
               scrollViewOptions: const DatePickerScrollViewOptions(
-                  year: ScrollViewDetailOptions(
-                    label: '년',
-                    margin: EdgeInsets.only(right: 8),
-                  ),
-                  month: ScrollViewDetailOptions(
-                    label: '월',
-                    margin: EdgeInsets.only(right: 8),
-                  ),
-                  day: ScrollViewDetailOptions(
-                    label: '일',
-                  )),
+                year: ScrollViewDetailOptions(
+                  label: '년',
+                  margin: EdgeInsets.only(right: 8),
+                ),
+                month: ScrollViewDetailOptions(
+                  label: '월',
+                  margin: EdgeInsets.only(right: 8),
+                ),
+                day: ScrollViewDetailOptions(
+                  label: '일',
+                ),
+              ),
               onDateTimeChanged: (DateTime value) {
                 newAlbumViewModel.albumModel.date =
                     value.toString().substring(0, 10);
@@ -228,7 +222,7 @@ class _ImageEditContainerState extends State<ImageEditContainer> {
 }
 
 class SimpleEditContainer extends StatelessWidget {
-  final TextEditingController _controller;
+  final TextEditingController _textController;
   final AlbumSelectedOption element;
   final NewAlbumViewModel newAlbumViewModel;
   final int nowSongIndex;
@@ -239,7 +233,7 @@ class SimpleEditContainer extends StatelessWidget {
     required this.element,
     required this.newAlbumViewModel,
     required this.nowSongIndex,
-  }) : _controller = controller;
+  }) : _textController = controller;
 
   @override
   Widget build(BuildContext context) {
@@ -257,7 +251,7 @@ class SimpleEditContainer extends StatelessWidget {
                 children: [
                   Expanded(
                     child: TextField(
-                      controller: _controller,
+                      controller: _textController,
                       decoration: InputDecoration(
                         border: const OutlineInputBorder(),
                         hintText: elementToKorean(element),
@@ -271,29 +265,30 @@ class SimpleEditContainer extends StatelessWidget {
                 onPressed: () {
                   switch (element) {
                     case AlbumSelectedOption.albumDate:
-                      newAlbumViewModel.albumModel.date = _controller.text;
+                      newAlbumViewModel.albumModel.date = _textController.text;
                       break;
                     case AlbumSelectedOption.albumTitle:
-                      newAlbumViewModel.albumModel.title = _controller.text;
+                      newAlbumViewModel.albumModel.title = _textController.text;
                       break;
                     case AlbumSelectedOption.albumImage:
-                      newAlbumViewModel.albumModel.imageUrl = _controller.text;
+                      newAlbumViewModel.albumModel.imageUrl =
+                          _textController.text;
                       break;
                     case AlbumSelectedOption.backgroundColor:
                       newAlbumViewModel.albumModel.backgroundColor =
-                          _controller.text;
+                          _textController.text;
                       break;
                     case AlbumSelectedOption.cdImage:
                       newAlbumViewModel.albumModel.songEntities![nowSongIndex]
-                          .imageUrl = _controller.text;
+                          .imageUrl = _textController.text;
                       break;
                     case AlbumSelectedOption.cdTitle:
                       newAlbumViewModel.albumModel.songEntities![nowSongIndex]
-                          .title = _controller.text;
+                          .title = _textController.text;
                       break;
                     case AlbumSelectedOption.cdReview:
                       newAlbumViewModel.albumModel.songEntities![nowSongIndex]
-                          .content = _controller.text;
+                          .content = _textController.text;
                       break;
                   }
                   Navigator.of(context).pop();

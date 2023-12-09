@@ -1,14 +1,16 @@
 import 'dart:math';
 import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_arc_text/flutter_arc_text.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+
 import 'package:sm_bar_master_frontend/data/datasource/remote_datasource.dart';
 import 'package:sm_bar_master_frontend/data/model/etc_model.dart';
 import 'package:sm_bar_master_frontend/ui/new_album/data_change_dialog.dart';
 import 'package:sm_bar_master_frontend/ui/new_album/new_album_view_model.dart';
-import 'package:provider/provider.dart';
 import 'package:sm_bar_master_frontend/data/model/song_entity.dart';
+import 'package:sm_bar_master_frontend/utils/data_convert.dart';
 
 class NewAlbumView extends StatelessWidget {
   const NewAlbumView({super.key});
@@ -155,9 +157,17 @@ class _PageController extends StatelessWidget {
 }
 
 class _SelectionIndicatorBar extends StatelessWidget {
+  final NewAlbumViewModel newAlbumViewModel;
+
   const _SelectionIndicatorBar({required this.newAlbumViewModel});
 
-  final NewAlbumViewModel newAlbumViewModel;
+  TextStyle getStyle(AlbumSelectedOption option) {
+    const normalTextStyle = TextStyle(fontSize: 25);
+    const selectedTextStyle = TextStyle(fontSize: 45);
+    return newAlbumViewModel.nowSelected == option
+        ? selectedTextStyle
+        : normalTextStyle;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -168,25 +178,13 @@ class _SelectionIndicatorBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text("--- 앨범 ---", style: TextStyle(fontSize: 40)),
-          newAlbumViewModel.nowSelected == AlbumSelectedOption.albumDate
-              ? const Text("날짜", style: TextStyle(fontSize: 45))
-              : const Text("날짜", style: TextStyle(fontSize: 25)),
-          newAlbumViewModel.nowSelected == AlbumSelectedOption.albumTitle
-              ? const Text("앨범 제목", style: TextStyle(fontSize: 45))
-              : const Text("앨범 제목", style: TextStyle(fontSize: 25)),
-          newAlbumViewModel.nowSelected == AlbumSelectedOption.backgroundColor
-              ? const Text("배경 색", style: TextStyle(fontSize: 45))
-              : const Text("배경 색", style: TextStyle(fontSize: 25)),
+          Text("날짜", style: getStyle(AlbumSelectedOption.albumDate)),
+          Text("앨범 제목", style: getStyle(AlbumSelectedOption.albumTitle)),
+          Text("배경 색", style: getStyle(AlbumSelectedOption.backgroundColor)),
           const Text("--- CD ---", style: TextStyle(fontSize: 40)),
-          newAlbumViewModel.nowSelected == AlbumSelectedOption.cdImage
-              ? const Text("칵테일 사진", style: TextStyle(fontSize: 45))
-              : const Text("칵테일 사진", style: TextStyle(fontSize: 25)),
-          newAlbumViewModel.nowSelected == AlbumSelectedOption.cdTitle
-              ? const Text("칵테일 이름", style: TextStyle(fontSize: 45))
-              : const Text("칵테일 이름", style: TextStyle(fontSize: 25)),
-          newAlbumViewModel.nowSelected == AlbumSelectedOption.cdReview
-              ? const Text("한줄평", style: TextStyle(fontSize: 45))
-              : const Text("한줄평", style: TextStyle(fontSize: 25)),
+          Text("칵테일 사진", style: getStyle(AlbumSelectedOption.cdImage)),
+          Text("칵테일 이름", style: getStyle(AlbumSelectedOption.cdTitle)),
+          Text("한줄평", style: getStyle(AlbumSelectedOption.cdReview)),
         ],
       ),
     );
@@ -216,52 +214,26 @@ class _SongsEditPreview extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    MouseRegion(
-                      onEnter: (_) => newAlbumViewModel
-                          .changeSelectedOption(AlbumSelectedOption.albumDate),
-                      child: InkWell(
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return DataChangeDialog(
-                                  newAlbumViewModel: newAlbumViewModel,
-                                  element: AlbumSelectedOption.albumDate,
-                                  nowSongIndex: newAlbumViewModel.nowSongIndex);
-                            },
-                          );
-                        },
-                        child: Text(
-                          newAlbumViewModel.albumModel.date!,
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 35),
-                        ),
+                    CustomHoverAndClickableWidget(
+                      newAlbumViewModel: newAlbumViewModel,
+                      type: AlbumSelectedOption.albumDate,
+                      child: Text(
+                        newAlbumViewModel.albumModel.date!,
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 35),
                       ),
                     ),
                     const Text(
                       ' - ',
                       style: TextStyle(color: Colors.white, fontSize: 35),
                     ),
-                    MouseRegion(
-                      onEnter: (_) => newAlbumViewModel
-                          .changeSelectedOption(AlbumSelectedOption.albumTitle),
-                      child: InkWell(
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return DataChangeDialog(
-                                  newAlbumViewModel: newAlbumViewModel,
-                                  element: AlbumSelectedOption.albumTitle,
-                                  nowSongIndex: newAlbumViewModel.nowSongIndex);
-                            },
-                          );
-                        },
-                        child: Text(
-                          newAlbumViewModel.albumModel.title!,
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 35),
-                        ),
+                    CustomHoverAndClickableWidget(
+                      newAlbumViewModel: newAlbumViewModel,
+                      type: AlbumSelectedOption.albumTitle,
+                      child: Text(
+                        newAlbumViewModel.albumModel.title!,
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 35),
                       ),
                     ),
                   ],
@@ -316,198 +288,111 @@ class _SongsEditPreview extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              MouseRegion(
-                onEnter: (_) => newAlbumViewModel
-                    .changeSelectedOption(AlbumSelectedOption.backgroundColor),
-                child: InkWell(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return DataChangeDialog(
+              CustomHoverAndClickableWidget(
+                newAlbumViewModel: newAlbumViewModel,
+                type: AlbumSelectedOption.backgroundColor,
+                child: Container(
+                  width: 600,
+                  height: 600,
+                  color: Color(
+                      int.parse(newAlbumViewModel.albumModel.backgroundColor!)),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: <Widget>[
+                      ClipOval(
+                        child: CustomHoverAndClickableWidget(
+                          newAlbumViewModel: newAlbumViewModel,
+                          type: AlbumSelectedOption.cdImage,
+                          child: Image.asset(
+                            newAlbumViewModel
+                                .albumModel
+                                .songEntities![newAlbumViewModel.nowSongIndex]
+                                .imageUrl!,
+                            fit: BoxFit.cover,
+                            width: 550,
+                            height: 550,
+                          ),
+                        ),
+                      ),
+                      // 중앙 뚫린 부분의 크기 조절
+                      Container(
+                        width: 70,
+                        height: 70,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const ArcText(
+                          radius: 250,
+                          text:
+                              'images matadata here!  images matadata here!   images matadata here!',
+                          textStyle:
+                              TextStyle(fontSize: 15, color: Colors.white),
+                          startAngle: -pi / 2,
+                          startAngleAlignment: StartAngleAlignment.start,
+                          placement: Placement.outside,
+                          direction: Direction.clockwise)
+                    ],
+                  ),
+                ),
+              ),
+              CustomHoverAndClickableWidget(
+                newAlbumViewModel: newAlbumViewModel,
+                type: AlbumSelectedOption.backgroundColor,
+                child: Container(
+                  height: 600,
+                  width: 20,
+                  color: const Color.fromARGB(255, 44, 57, 63),
+                ),
+              ),
+              CustomHoverAndClickableWidget(
+                newAlbumViewModel: newAlbumViewModel,
+                type: AlbumSelectedOption.backgroundColor,
+                child: Container(
+                  height: 600,
+                  width: 600,
+                  color: Color(
+                      int.parse(newAlbumViewModel.albumModel.backgroundColor!)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(45),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 15),
+                          child: CustomHoverAndClickableWidget(
                             newAlbumViewModel: newAlbumViewModel,
-                            element: AlbumSelectedOption.backgroundColor,
-                            nowSongIndex: newAlbumViewModel.nowSongIndex);
-                      },
-                    );
-                  },
-                  child: Container(
-                    width: 600,
-                    height: 600,
-                    color: Color(int.parse(
-                        newAlbumViewModel.albumModel.backgroundColor!)),
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: <Widget>[
-                        ClipOval(
-                          child: MouseRegion(
-                            onEnter: (_) =>
-                                newAlbumViewModel.changeSelectedOption(
-                                    AlbumSelectedOption.cdImage),
-                            child: InkWell(
-                              onTap: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return DataChangeDialog(
-                                        newAlbumViewModel: newAlbumViewModel,
-                                        element: AlbumSelectedOption.cdImage,
-                                        nowSongIndex:
-                                            newAlbumViewModel.nowSongIndex);
-                                  },
-                                );
-                              },
-                              child: Image.asset(
-                                newAlbumViewModel
-                                    .albumModel
-                                    .songEntities![
-                                        newAlbumViewModel.nowSongIndex]
-                                    .imageUrl!,
-                                fit: BoxFit.cover,
-                                width: 550,
-                                height: 550,
-                              ),
+                            type: AlbumSelectedOption.cdTitle,
+                            child: Text(
+                              newAlbumViewModel
+                                  .albumModel
+                                  .songEntities![newAlbumViewModel.nowSongIndex]
+                                  .title!,
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.w800),
                             ),
                           ),
                         ),
-                        // 중앙 뚫린 부분의 크기 조절
-                        Container(
-                          width: 70,
-                          height: 70,
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
+                        CustomHoverAndClickableWidget(
+                          newAlbumViewModel: newAlbumViewModel,
+                          type: AlbumSelectedOption.cdReview,
+                          child: Text(
+                            newAlbumViewModel
+                                .albumModel
+                                .songEntities![newAlbumViewModel.nowSongIndex]
+                                .content!,
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 11),
                           ),
                         ),
-                        const ArcText(
-                            radius: 250,
-                            text:
-                                'images matadata here!  images matadata here!   images matadata here!',
-                            textStyle:
-                                TextStyle(fontSize: 15, color: Colors.white),
-                            startAngle: -pi / 2,
-                            startAngleAlignment: StartAngleAlignment.start,
-                            placement: Placement.outside,
-                            direction: Direction.clockwise)
                       ],
                     ),
                   ),
                 ),
               ),
-              MouseRegion(
-                onEnter: (_) => newAlbumViewModel
-                    .changeSelectedOption(AlbumSelectedOption.backgroundColor),
-                child: InkWell(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return DataChangeDialog(
-                            newAlbumViewModel: newAlbumViewModel,
-                            element: AlbumSelectedOption.backgroundColor,
-                            nowSongIndex: newAlbumViewModel.nowSongIndex);
-                      },
-                    );
-                  },
-                  child: Container(
-                    height: 600,
-                    width: 20,
-                    color: const Color.fromARGB(255, 44, 57, 63),
-                  ),
-                ),
-              ),
-              MouseRegion(
-                onEnter: (_) => newAlbumViewModel
-                    .changeSelectedOption(AlbumSelectedOption.backgroundColor),
-                child: InkWell(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return DataChangeDialog(
-                            newAlbumViewModel: newAlbumViewModel,
-                            element: AlbumSelectedOption.backgroundColor,
-                            nowSongIndex: newAlbumViewModel.nowSongIndex);
-                      },
-                    );
-                  },
-                  child: Container(
-                    height: 600,
-                    width: 600,
-                    color: Color(int.parse(
-                        newAlbumViewModel.albumModel.backgroundColor!)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(45),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 15),
-                            child: MouseRegion(
-                              onEnter: (_) =>
-                                  newAlbumViewModel.changeSelectedOption(
-                                      AlbumSelectedOption.cdTitle),
-                              child: InkWell(
-                                onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return DataChangeDialog(
-                                          newAlbumViewModel: newAlbumViewModel,
-                                          element: AlbumSelectedOption.cdTitle,
-                                          nowSongIndex:
-                                              newAlbumViewModel.nowSongIndex);
-                                    },
-                                  );
-                                },
-                                child: Text(
-                                  newAlbumViewModel
-                                      .albumModel
-                                      .songEntities![
-                                          newAlbumViewModel.nowSongIndex]
-                                      .title!,
-                                  style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 32,
-                                      fontWeight: FontWeight.w800),
-                                ),
-                              ),
-                            ),
-                          ),
-                          MouseRegion(
-                            onEnter: (_) =>
-                                newAlbumViewModel.changeSelectedOption(
-                                    AlbumSelectedOption.cdReview),
-                            child: InkWell(
-                              onTap: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return DataChangeDialog(
-                                        newAlbumViewModel: newAlbumViewModel,
-                                        element: AlbumSelectedOption.cdReview,
-                                        nowSongIndex:
-                                            newAlbumViewModel.nowSongIndex);
-                                  },
-                                );
-                              },
-                              child: Text(
-                                newAlbumViewModel
-                                    .albumModel
-                                    .songEntities![
-                                        newAlbumViewModel.nowSongIndex]
-                                    .content!,
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: 11),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              )
             ],
           ),
         ],
@@ -516,10 +401,38 @@ class _SongsEditPreview extends StatelessWidget {
   }
 }
 
-Future<Image?> xfileToImageWidget(XFile? image) async {
-  if (image == null) return null;
-  Uint8List imageData = await image.readAsBytes();
-  return Image.memory(imageData);
+class CustomHoverAndClickableWidget extends StatelessWidget {
+  final NewAlbumViewModel newAlbumViewModel;
+  final AlbumSelectedOption type;
+  final Widget child;
+
+  const CustomHoverAndClickableWidget({
+    super.key,
+    required this.newAlbumViewModel,
+    required this.type,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => newAlbumViewModel.changeSelectedOption(type),
+      child: InkWell(
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return DataChangeDialog(
+                newAlbumViewModel: newAlbumViewModel,
+                element: type,
+              );
+            },
+          );
+        },
+        child: child,
+      ),
+    );
+  }
 }
 
 class _AlbumEditPreview extends StatelessWidget {
@@ -530,40 +443,27 @@ class _AlbumEditPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: MouseRegion(
-        onEnter: (_) => newAlbumViewModel
-            .changeSelectedOption(AlbumSelectedOption.albumImage),
-        child: InkWell(
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return DataChangeDialog(
-                    newAlbumViewModel: newAlbumViewModel,
-                    element: AlbumSelectedOption.albumImage,
-                    nowSongIndex: newAlbumViewModel.nowSongIndex);
-              },
-            );
+      child: CustomHoverAndClickableWidget(
+        newAlbumViewModel: newAlbumViewModel,
+        type: AlbumSelectedOption.albumImage,
+        child: FutureBuilder<Uint8List?>(
+          future:
+              xfileToUint8List(newAlbumViewModel.newAlbumTitlePreviewImage),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return SizedBox(
+                width: 600,
+                height: 600,
+                child: Image.memory(snapshot.data!),
+              );
+            } else {
+              return Container(
+                width: 600,
+                height: 600,
+                color: Colors.white,
+              );
+            }
           },
-          child: FutureBuilder<Image?>(
-            future: xfileToImageWidget(
-                newAlbumViewModel.newAlbumTitlePreviewImage),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return SizedBox(
-                  width: 600,
-                  height: 600,
-                  child: snapshot.data,
-                );
-              } else {
-                return Container(
-                  width: 600,
-                  height: 600,
-                  color: Colors.white,
-                );
-              }
-            },
-          ),
         ),
       ),
     );
