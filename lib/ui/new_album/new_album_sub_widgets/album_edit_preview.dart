@@ -1,10 +1,10 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:sm_bar_master_frontend/data/model/etc_model.dart';
+import 'package:sm_bar_master_frontend/utils/types.dart';
 import 'package:sm_bar_master_frontend/ui/new_album/new_album_sub_widgets/custom_hover_and_clickable_widget.dart';
 import 'package:sm_bar_master_frontend/ui/new_album/new_album_view_model.dart';
-import 'package:sm_bar_master_frontend/utils/data_convert.dart';
+import 'package:sm_bar_master_frontend/utils/image_data_convert.dart';
 
 class AlbumEditPreview extends StatelessWidget {
   final NewAlbumViewModel newAlbumViewModel;

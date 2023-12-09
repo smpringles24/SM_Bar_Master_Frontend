@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sm_bar_master_frontend/data/model/album_model.dart';
-import 'package:sm_bar_master_frontend/data/model/etc_model.dart';
+import 'package:sm_bar_master_frontend/utils/types.dart';
 import 'package:sm_bar_master_frontend/data/model/song_entity.dart';
 
 class NewAlbumViewModel with ChangeNotifier {
