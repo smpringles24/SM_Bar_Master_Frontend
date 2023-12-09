@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sm_bar_master_frontend/data/model/album_model.dart';
-import 'package:sm_bar_master_frontend/data/model/etc_model.dart';
+import 'package:sm_bar_master_frontend/utils/types.dart';
 import 'package:sm_bar_master_frontend/data/model/song_entity.dart';
 
 class NewAlbumViewModel with ChangeNotifier {
@@ -16,6 +16,7 @@ class NewAlbumViewModel with ChangeNotifier {
   //############
 
   int _nowSongIndex = 0;
+    ///nowSongIndex   -1: 앨범 타이틀페이지, 0~: 노래 페이지
   int get nowSongIndex => _nowSongIndex;
 
   setNowSongIndex(int index) {
