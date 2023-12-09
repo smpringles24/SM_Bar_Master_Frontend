@@ -1,16 +1,22 @@
-# sm_bar_master_frontend
+# 파일 정리 방법
+- MVVM을 기반으로 provider를 사용
 
-A new Flutter project.
+## 폴더구조
+- lib
+  - main.dart
 
-## Getting Started
+  - assets : 이미지, 폰트 등의 파일
+    - images : 이미지 파일
 
-This project is a starting point for a Flutter application.
+  - data : 백엔드와 관련된 코드
+    - datasource : 백엔드와 통신하는 메소드
+    - model : 백엔드 기반 데이터모델
 
-A few resources to get you started if this is your first Flutter project:
+  - ui : 프론트엔드와 관련된 코드 MVVM패턴 적용
+    - album 페이지
+    - memory 페이지
+    - new_album 페이지
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+  - utils : 유틸리티 코드
+    - types : 타입 정의(enum)
+    - 기타 convert : 타입 변환 메소드

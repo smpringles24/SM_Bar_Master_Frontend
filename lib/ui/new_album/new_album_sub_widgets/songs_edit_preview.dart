@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_arc_text/flutter_arc_text.dart';
 
-import 'package:sm_bar_master_frontend/data/model/etc_model.dart';
+import 'package:sm_bar_master_frontend/utils/types.dart';
 import 'package:sm_bar_master_frontend/data/model/song_entity.dart';
 import 'package:sm_bar_master_frontend/ui/new_album/new_album_view_model.dart';
 import 'package:sm_bar_master_frontend/ui/new_album/new_album_sub_widgets/custom_hover_and_clickable_widget.dart';

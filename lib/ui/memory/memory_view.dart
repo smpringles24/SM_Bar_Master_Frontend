@@ -23,29 +23,44 @@ class MemoryView extends StatelessWidget {
           } else if (snapshot.hasError) {
             return Text('에러 발생: ${snapshot.error}');
           } else if (snapshot.hasData) {
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(40, 30, 40, 0),
-                  child: MemoryHandler(
-                      memoryViewModel: memoryViewModel, snapshot: snapshot),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40, vertical: 35),
-                    child: MemoryViewer(
-                        memoryViewModel: memoryViewModel, snapshot: snapshot),
-                  ),
-                ),
-                const MemoryStatusViewer(),
-              ],
-            );
+            return _MainPage(
+                memoryViewModel: memoryViewModel, snapshot: snapshot);
           } else {
             return const Text('데이터가 없습니다.');
           }
         },
       ),
+    );
+  }
+}
+
+class _MainPage extends StatelessWidget {
+  const _MainPage({
+    required this.memoryViewModel,
+    required this.snapshot,
+  });
+
+  final MemoryViewModel memoryViewModel;
+  final AsyncSnapshot snapshot;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(40, 30, 40, 0),
+          child: MemoryHandler(
+              memoryViewModel: memoryViewModel, snapshot: snapshot),
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 35),
+            child: MemoryViewer(
+                memoryViewModel: memoryViewModel, snapshot: snapshot),
+          ),
+        ),
+        const MemoryStatusViewer(),
+      ],
     );
   }
 }
