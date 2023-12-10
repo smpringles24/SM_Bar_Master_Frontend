@@ -50,7 +50,7 @@ class NewAlbumView extends StatelessWidget {
                     child: Stack(
                       children: [
                         Center(
-                          child: newAlbumViewModel.nowSongIndex == -1
+                          child: newAlbumViewModel.nowSongIndex == 0
                               ? AlbumEditPreview(
                                   newAlbumViewModel: newAlbumViewModel)
                               : SongsEditPreview(
@@ -71,7 +71,7 @@ class NewAlbumView extends StatelessWidget {
                       width: double.infinity,
                       child: TextButton(
                         onPressed: () async {
-                          await createAlbum(newAlbumViewModel.albumModel)
+                          await createAlbum(newAlbumViewModel)
                               .then((_) => {Navigator.pop(context, true)});
                         },
                         child: const Text(

@@ -15,52 +15,53 @@ class MemoryViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: GridView.builder(
-        scrollDirection: Axis.horizontal,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 25.0,
-          mainAxisSpacing: 25.0,
-        ),
-        itemCount: snapshot.data!.length + 1,
-        itemBuilder: (BuildContext context, int index) {
-          if (index < snapshot.data!.length) {
-            return InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        AlbumPage(albumId: snapshot.data![index].albumId!),
-                  ),
-                );
-              },
-              child: SizedBox(
-                child: Image.asset(
-                  snapshot.data![index].imageUrl!,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            );
-          } else {
-            return ElevatedButton(
-              onPressed: () async {
-                bool result = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const NewAlbumPage(),
-                  ),
-                );
-                if (result) {
-                  await memoryViewModel.fetchdata();
-                }
-              },
-              child: const Text("앨범 추가"),
-            );
-          }
-        },
+    return GridView.builder(
+      scrollDirection: Axis.horizontal,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 25.0,
+        mainAxisSpacing: 25.0,
       ),
+      itemCount: snapshot.data!.length + 1,
+      itemBuilder: (BuildContext context, int index) {
+        if (index < snapshot.data!.length) {
+          return InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      AlbumPage(albumId: snapshot.data![index].albumId!),
+                ),
+              );
+            },
+            child: SizedBox(
+              child: snapshot.data![index].imageUrl! == 'lib/assets/image_placeholder_no_image.png' ? Image.asset(
+                snapshot.data![index].imageUrl!,
+                fit: BoxFit.cover,
+              ) : Image.network(
+                snapshot.data![index].imageUrl!,
+                fit: BoxFit.fill,
+              )
+            ),
+          );
+        } else {
+          return ElevatedButton(
+            onPressed: () async {
+              bool result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const NewAlbumPage(),
+                ),
+              );
+              if (result) {
+                await memoryViewModel.fetchdata();
+              }
+            },
+            child: const Text("앨범 추가"),
+          );
+        }
+      },
     );
   }
 }

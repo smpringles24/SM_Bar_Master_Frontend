@@ -16,7 +16,7 @@ class NewAlbumViewModel with ChangeNotifier {
   //############
 
   int _nowSongIndex = 0;
-    ///nowSongIndex   -1: 앨범 타이틀페이지, 0~: 노래 페이지
+    ///nowSongIndex   0: 앨범 타이틀페이지, 1 ~ : 노래 페이지
   int get nowSongIndex => _nowSongIndex;
 
   setNowSongIndex(int index) {
@@ -30,12 +30,12 @@ class NewAlbumViewModel with ChangeNotifier {
   AlbumModel get albumModel => _albumModel;
 
   //############
+  
+  final List<XFile?> _newAlbumPreviewImages = [null,null];
+  List<XFile?> get newAlbumPreviewImages => _newAlbumPreviewImages;
 
-  XFile? _newAlbumTitlePreviewImage;
-  XFile? get newAlbumTitlePreviewImage => _newAlbumTitlePreviewImage;
-
-  setNewAlbumTitlePreviewImage(XFile image) {
-    _newAlbumTitlePreviewImage = image;
+  setNewAlbumPreviewImages(XFile? image, int index) {
+    _newAlbumPreviewImages[index] = image;
     notifyListeners();
   }
 
@@ -46,11 +46,13 @@ class NewAlbumViewModel with ChangeNotifier {
 
   void addSongEntity(SongEntity songEntity) {
     _albumModel.songEntities!.add(songEntity);
+    _newAlbumPreviewImages.add(null);
     notifyListeners();
   }
 
   void removeSongEntity(int index) {
     _albumModel.songEntities!.removeAt(index);
+    _newAlbumPreviewImages.removeAt(index);
     notifyListeners();
   }
 }

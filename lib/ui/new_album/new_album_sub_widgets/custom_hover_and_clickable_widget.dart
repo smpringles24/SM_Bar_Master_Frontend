@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sm_bar_master_frontend/utils/types.dart';
-import 'package:sm_bar_master_frontend/ui/new_album/data_change_dialog.dart';
+import 'package:sm_bar_master_frontend/ui/new_album/new_album_sub_widgets/data_change_dialog.dart';
 import 'package:sm_bar_master_frontend/ui/new_album/new_album_view_model.dart';
 
 class CustomHoverAndClickableWidget extends StatelessWidget {

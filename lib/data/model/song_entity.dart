@@ -8,7 +8,7 @@ class SongEntity {
 
   SongEntity(
       {this.songId,
-      this.imageUrl = 'lib/assets/placeholder.png',
+      this.imageUrl = 'lib/assets/image_placeholder_no_image.png',
       this.imageData = 'some image data',
       this.title = 'No Title',
       this.content = 'No Content',

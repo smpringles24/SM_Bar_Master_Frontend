@@ -6,7 +6,6 @@ import 'package:flutter_arc_text/flutter_arc_text.dart';
 import 'package:sm_bar_master_frontend/data/model/album_model.dart';
 import 'package:sm_bar_master_frontend/ui/album/album_view_model.dart';
 
-
 class SongsPreview extends StatelessWidget {
   const SongsPreview({
     super.key,
@@ -43,16 +42,26 @@ class SongsPreview extends StatelessWidget {
                   alignment: Alignment.center,
                   children: <Widget>[
                     ClipOval(
-                      child: Image.asset(
-                        snapshot
-                            .data!
-                            .songEntities![albumViewModel.nowSongIndex]
-                            .imageUrl!,
-                        fit: BoxFit.cover,
-                        width: 550,
-                        height: 550,
-                      ),
-                    ),
+                        child: snapshot.data!.imageUrl! ==
+                                'lib/assets/image_placeholder_no_image.png'
+                            ? Image.asset(
+                                snapshot
+                                    .data!
+                                    .songEntities![albumViewModel.nowSongIndex]
+                                    .imageUrl!,
+                                fit: BoxFit.cover,
+                                width: 550,
+                                height: 550,
+                              )
+                            : Image.network(
+                                snapshot
+                                    .data!
+                                    .songEntities![albumViewModel.nowSongIndex]
+                                    .imageUrl!,
+                                fit: BoxFit.cover,
+                                width: 550,
+                                height: 550,
+                              )),
                     Container(
                       width: 70, // 중앙 뚫린 부분의 크기 조절
                       height: 70,
