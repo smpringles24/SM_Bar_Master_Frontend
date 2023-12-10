@@ -6,6 +6,8 @@ import 'package:sm_bar_master_frontend/data/model/album_model.dart';
 import 'package:sm_bar_master_frontend/data/model/album_preview_image_model.dart';
 import 'package:sm_bar_master_frontend/ui/new_album/new_album_view_model.dart';
 
+
+
 Future<String> uploadImageToS3(XFile? imageFile) async {
   if (imageFile == null) return 'image file is null';
 
@@ -32,16 +34,24 @@ Future<String> uploadImageToS3(XFile? imageFile) async {
   }
 }
 
+
+
 Future<bool> createAlbum(NewAlbumViewModel newAlbumViewModel) async {
   final url = Uri.parse("http://localhost:3003/album");
 
   //newAlbumViewModel.newAlbumTitlePreviewImage를 S3에 업로드
   try {
-    final String response =
-        await uploadImageToS3(newAlbumViewModel.newAlbumTitlePreviewImage);
+    for (int i = 0; i < newAlbumViewModel.newAlbumPreviewImages.length; i++) {
+      final String response =
+          await uploadImageToS3(newAlbumViewModel.newAlbumPreviewImages[i]);
 
-    // newAlbumViewModel.albumModel에 이미지 url 저장
-    newAlbumViewModel.albumModel.imageUrl = response;
+      if(i == 0){
+            newAlbumViewModel.albumModel.imageUrl = response;
+      } else {
+            newAlbumViewModel.albumModel.songEntities![i-1].imageUrl = response;
+      }
+    }
+
   } catch (e) {
     print('Error: $e');
   }
@@ -63,6 +73,8 @@ Future<bool> createAlbum(NewAlbumViewModel newAlbumViewModel) async {
   }
 }
 
+
+
 Future<List<AlbumPreviewImageModel>> fetchAllAlbumPreviewImage() async {
   final url = Uri.parse("http://localhost:3003/album/preview");
 
@@ -81,6 +93,8 @@ Future<List<AlbumPreviewImageModel>> fetchAllAlbumPreviewImage() async {
   }
 }
 
+
+
 Future<AlbumModel> getAlbumById(int id) async {
   final url = Uri.parse("http://localhost:3003/album/$id");
 
@@ -94,6 +108,8 @@ Future<AlbumModel> getAlbumById(int id) async {
         'Failed to load album. Status code: ${response.statusCode}');
   }
 }
+
+
 
 Future<bool> deleteAlbum(int id) async {
   final url = Uri.parse("http://localhost:3003/album/$id");

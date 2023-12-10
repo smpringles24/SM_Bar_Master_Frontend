@@ -33,6 +33,10 @@ class DataChangeDialog extends StatelessWidget {
               return ImageEditContainer(
                   newAlbumViewModel: newAlbumViewModel,
                   imageIndex: newAlbumViewModel.nowSongIndex);
+            case AlbumSelectedOption.cdImage:
+              return ImageEditContainer(
+                  newAlbumViewModel: newAlbumViewModel,
+                  imageIndex: newAlbumViewModel.nowSongIndex);
             default:
               return SimpleEditContainer(
                   controller: _textController,
@@ -194,13 +198,8 @@ class _ImageEditContainerState extends State<ImageEditContainer> {
           ),
           ElevatedButton(
             onPressed: () {
-              if (widget.imageIndex == -1) {
-                widget.newAlbumViewModel
-                    .setNewAlbumTitlePreviewImage(_previewImage!);
-              } else {
-                //song의 이미지 변경
-              }
-
+              widget.newAlbumViewModel
+                  .setNewAlbumPreviewImages(_previewImage!, widget.imageIndex);
               Navigator.of(context).pop();
             },
             child: const Text('수정'),
@@ -269,15 +268,21 @@ class SimpleEditContainer extends StatelessWidget {
                           _textController.text;
                       break;
                     case AlbumSelectedOption.cdImage:
-                      newAlbumViewModel.albumModel.songEntities![nowSongIndex]
+                      newAlbumViewModel
+                          .albumModel
+                          .songEntities![nowSongIndex - 1]
                           .imageUrl = _textController.text;
                       break;
                     case AlbumSelectedOption.cdTitle:
-                      newAlbumViewModel.albumModel.songEntities![nowSongIndex]
+                      newAlbumViewModel
+                          .albumModel
+                          .songEntities![nowSongIndex - 1]
                           .title = _textController.text;
                       break;
                     case AlbumSelectedOption.cdReview:
-                      newAlbumViewModel.albumModel.songEntities![nowSongIndex]
+                      newAlbumViewModel
+                          .albumModel
+                          .songEntities![nowSongIndex - 1]
                           .content = _textController.text;
                       break;
                   }

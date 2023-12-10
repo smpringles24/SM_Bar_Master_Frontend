@@ -1,13 +1,14 @@
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_arc_text/flutter_arc_text.dart';
+import 'package:sm_bar_master_frontend/utils/image_data_convert.dart';
 
 import 'package:sm_bar_master_frontend/utils/types.dart';
 import 'package:sm_bar_master_frontend/data/model/song_entity.dart';
 import 'package:sm_bar_master_frontend/ui/new_album/new_album_view_model.dart';
 import 'package:sm_bar_master_frontend/ui/new_album/new_album_sub_widgets/custom_hover_and_clickable_widget.dart';
-
 
 class SongsEditPreview extends StatelessWidget {
   final NewAlbumViewModel newAlbumViewModel;
@@ -67,8 +68,7 @@ class SongsEditPreview extends StatelessWidget {
                           newAlbumViewModel.addSongEntity(SongEntity());
                           if (newAlbumViewModel.nowSongIndex <
                               newAlbumViewModel
-                                      .albumModel.songEntities!.length -
-                                  1) {
+                                  .albumModel.songEntities!.length) {
                             newAlbumViewModel.setNowSongIndex(
                                 newAlbumViewModel.nowSongIndex + 1);
                           }
@@ -82,11 +82,10 @@ class SongsEditPreview extends StatelessWidget {
                         onPressed: () {
                           if (newAlbumViewModel
                                   .albumModel.songEntities!.length ==
-                              1) return;
+                              2) return;
                           if (newAlbumViewModel.nowSongIndex ==
                               newAlbumViewModel
-                                      .albumModel.songEntities!.length -
-                                  1) {
+                                  .albumModel.songEntities!.length) {
                             newAlbumViewModel.setNowSongIndex(
                                 newAlbumViewModel.nowSongIndex - 1);
                           }
@@ -121,14 +120,26 @@ class SongsEditPreview extends StatelessWidget {
                         child: CustomHoverAndClickableWidget(
                           newAlbumViewModel: newAlbumViewModel,
                           type: AlbumSelectedOption.cdImage,
-                          child: Image.asset(
-                            newAlbumViewModel
-                                .albumModel
-                                .songEntities![newAlbumViewModel.nowSongIndex]
-                                .imageUrl!,
-                            fit: BoxFit.cover,
-                            width: 550,
-                            height: 550,
+                          child: FutureBuilder<Uint8List?>(
+                            future: xfileToUint8List(
+                                newAlbumViewModel.newAlbumPreviewImages[
+                                    newAlbumViewModel.nowSongIndex]),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return Image.memory(
+                                  snapshot.data!,
+                                  fit: BoxFit.cover,
+                                  width: 550,
+                                  height: 550,
+                                );
+                              } else {
+                                return Image.asset(
+                                    'lib/assets/image_placeholder_no_image.png',
+                                    fit: BoxFit.cover,
+                                    width: 550,
+                                    height: 550);
+                              }
+                            },
                           ),
                         ),
                       ),
@@ -185,7 +196,7 @@ class SongsEditPreview extends StatelessWidget {
                             child: Text(
                               newAlbumViewModel
                                   .albumModel
-                                  .songEntities![newAlbumViewModel.nowSongIndex]
+                                  .songEntities![newAlbumViewModel.nowSongIndex - 1]
                                   .title!,
                               style: const TextStyle(
                                   color: Colors.white,
@@ -200,7 +211,7 @@ class SongsEditPreview extends StatelessWidget {
                           child: Text(
                             newAlbumViewModel
                                 .albumModel
-                                .songEntities![newAlbumViewModel.nowSongIndex]
+                                .songEntities![newAlbumViewModel.nowSongIndex - 1]
                                 .content!,
                             style: const TextStyle(
                                 color: Colors.white, fontSize: 11),

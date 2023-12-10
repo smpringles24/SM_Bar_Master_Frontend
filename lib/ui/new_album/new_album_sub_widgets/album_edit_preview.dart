@@ -6,6 +6,8 @@ import 'package:sm_bar_master_frontend/ui/new_album/new_album_sub_widgets/custom
 import 'package:sm_bar_master_frontend/ui/new_album/new_album_view_model.dart';
 import 'package:sm_bar_master_frontend/utils/image_data_convert.dart';
 
+const int albumTitleIndex = 0;
+
 class AlbumEditPreview extends StatelessWidget {
   final NewAlbumViewModel newAlbumViewModel;
 
@@ -19,7 +21,7 @@ class AlbumEditPreview extends StatelessWidget {
         type: AlbumSelectedOption.albumImage,
         child: FutureBuilder<Uint8List?>(
           future:
-              xfileToUint8List(newAlbumViewModel.newAlbumTitlePreviewImage),
+              xfileToUint8List(newAlbumViewModel.newAlbumPreviewImages[albumTitleIndex]),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return SizedBox(
@@ -33,7 +35,7 @@ class AlbumEditPreview extends StatelessWidget {
                 height: 600,
                 child: Image.asset('lib/assets/image_placeholder_no_image.png'),
               );
-            }
+            } 
           },
         ),
       ),

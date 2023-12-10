@@ -50,7 +50,7 @@ class NewAlbumView extends StatelessWidget {
                     child: Stack(
                       children: [
                         Center(
-                          child: newAlbumViewModel.nowSongIndex == -1
+                          child: newAlbumViewModel.nowSongIndex == 0
                               ? AlbumEditPreview(
                                   newAlbumViewModel: newAlbumViewModel)
                               : SongsEditPreview(

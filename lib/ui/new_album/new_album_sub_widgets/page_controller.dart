@@ -22,7 +22,7 @@ class CustomPageController extends StatelessWidget {
               height: 100,
             ),
             onPressed: () {
-              if (newAlbumViewModel.nowSongIndex >= 0) {
+              if (newAlbumViewModel.nowSongIndex > 0) {
                 newAlbumViewModel
                     .setNowSongIndex(newAlbumViewModel.nowSongIndex - 1);
               }
@@ -42,7 +42,7 @@ class CustomPageController extends StatelessWidget {
             ),
             onPressed: () {
               if (newAlbumViewModel.nowSongIndex <
-                  newAlbumViewModel.albumModel.songEntities!.length - 1) {
+                  newAlbumViewModel.albumModel.songEntities!.length) {
                 newAlbumViewModel
                     .setNowSongIndex(newAlbumViewModel.nowSongIndex + 1);
               }
